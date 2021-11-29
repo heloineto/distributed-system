@@ -25,7 +25,7 @@ const updateStep2Schema = yup.object().shape({
     .max(8, 'A senha pode ter no maximo 8 caracteres'),
 });
 
-const updateStep2 = async (message: TCPMessage) => {
+const updateStep2 = async (message: TCPMessage, globalUsername = 'user') => {
   try {
     await updateStep2Schema.validate(message);
   } catch (error) {
@@ -45,17 +45,17 @@ const updateStep2 = async (message: TCPMessage) => {
   }
 
   try {
-    const { username, password, name, state, city } = message;
+    const { password, name, state, city } = message;
 
     await createUserWithEmailAndPassword(
       auth,
-      `${username}@k.ey`,
+      `${globalUsername}@k.ey`,
       password + '*{`r=~D&5<Q2@pP'
     ).catch((error) => {});
 
-    const userRef = doc(firestore, `users/${username}`);
+    const userRef = doc(firestore, `users/${globalUsername}`);
     await setDoc(userRef, {
-      username,
+      globalUsername,
       password,
       name,
       state,
@@ -73,7 +73,7 @@ const updateStep2 = async (message: TCPMessage) => {
         protocol: 722,
         message: {
           result: false,
-          reason: authErrors?.[error.code].message ?? error?.message ?? error,
+          reason: authErrors?.[error.code]?.message ?? error?.message ?? error,
         },
         required: ['result', 'reason'],
       };

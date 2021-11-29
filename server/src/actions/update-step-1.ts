@@ -16,16 +16,20 @@ const updateStep1 = async (message: TCPMessage) => {
   } catch (error) {
     if (error instanceof yup.ValidationError) {
       return {
-        protocol: 712,
-        message: { result: false, reason: error.message },
-        required: ['result', 'reason'],
+        response: {
+          protocol: 712,
+          message: { result: false, reason: error.message },
+          required: ['result', 'reason'],
+        },
       };
     }
 
     return {
-      protocol: 712,
-      message: { result: false, reason: 'Erro desconhecido' },
-      required: ['result', 'reason'],
+      response: {
+        protocol: 712,
+        message: { result: false, reason: 'Erro desconhecido' },
+        required: ['result', 'reason'],
+      },
     };
   }
 
@@ -40,33 +44,40 @@ const updateStep1 = async (message: TCPMessage) => {
     //! Do que se trata esse receptor?
 
     return {
-      protocol: 711,
-      message: {
-        result: true,
-        name,
-        city,
-        state,
-        password: '',
-        receptor: receptor ?? 99,
+      response: {
+        protocol: 711,
+        message: {
+          result: true,
+          name,
+          city,
+          state,
+          password: '',
+          receptor: receptor ?? 99,
+        },
+        required: ['result', 'name', 'city', 'state', 'password', 'receptor'],
       },
-      required: ['result', 'name', 'city', 'state', 'password', 'receptor'],
+      globalUsername: username,
     };
   } catch (error) {
     if (isFirebaseAuthError(error)) {
       return {
-        protocol: 712,
-        message: {
-          result: false,
-          reason: authErrors?.[error.code].message ?? error.message,
+        response: {
+          protocol: 712,
+          message: {
+            result: false,
+            reason: authErrors?.[error.code]?.message ?? error.message ?? error,
+          },
+          required: ['result', 'reason'],
         },
-        required: ['result', 'reason'],
       };
     }
 
     return {
-      protocol: 712,
-      message: { result: false, reason: 'Erro desconhecido' },
-      required: ['result', 'reason'],
+      response: {
+        protocol: 712,
+        message: { result: false, reason: 'Erro desconhecido' },
+        required: ['result', 'reason'],
+      },
     };
   }
 };

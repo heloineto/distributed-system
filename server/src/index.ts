@@ -1,5 +1,6 @@
 import net from 'net';
 const prompt = require('prompt-sync')();
+const cliSelect = require('cli-select');
 
 const protocols: { [key: number]: string } = {
   100: 'login',
@@ -13,6 +14,7 @@ const createServer = (port: number, encoding: BufferEncoding = 'utf8') => {
   const server = net.createServer((socket) => {
     socket.setEncoding(encoding);
     console.log(`(${port}) Conexão estabelecida!`);
+    let globalUsername = 'user';
 
     socket.on('data', async (data) => {
       let request: TCPRequest;
@@ -40,8 +42,38 @@ const createServer = (port: number, encoding: BufferEncoding = 'utf8') => {
 
       console.info(`(${port}) EXEC ACTION:`, protocols[protocol]);
 
-      const { default: action } = await import(`./actions/${protocols[protocol]}`);
-      const response = await action(request.message);
+      let response;
+
+      switch (protocol) {
+        case 100:
+          const { default: login } = await import(`./actions/login`);
+          response = await login(request.message);
+          break;
+        case 199:
+          const { default: logout } = await import(`./actions/logout`);
+          response = await logout();
+          break;
+        case 700:
+          const { default: register } = await import(`./actions/register`);
+          response = await register(request.message);
+          break;
+        case 710:
+          const { default: updateStep1 } = await import(`./actions/update-step-1`);
+          const { response: _response, globalUsername: _globalUsername } =
+            await updateStep1(request.message);
+
+          response = _response;
+          globalUsername = _globalUsername ?? 'user';
+          console.log('SAINDOOOO ', globalUsername);
+          break;
+        case 720:
+          const { default: updateStep2 } = await import(`./actions/update-step-2`);
+          console.log('ENTRANDDOOOO ', globalUsername);
+          response = await updateStep2(request.message, globalUsername);
+          break;
+        default:
+          break;
+      }
 
       if (response) {
         socket.write(JSON.stringify(response));
