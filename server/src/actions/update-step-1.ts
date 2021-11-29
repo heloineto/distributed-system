@@ -65,7 +65,7 @@ const updateStep1 = async (message: TCPMessage) => {
           protocol: 712,
           message: {
             result: false,
-            reason: authErrors?.[error.code]?.message ?? error.message ?? error,
+            reason: authErrors?.[error?.code]?.message ?? error.message ?? error,
           },
           required: ['result', 'reason'],
         },

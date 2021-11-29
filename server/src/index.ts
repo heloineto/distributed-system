@@ -64,11 +64,9 @@ const createServer = (port: number, encoding: BufferEncoding = 'utf8') => {
 
           response = _response;
           globalUsername = _globalUsername ?? 'user';
-          console.log('SAINDOOOO ', globalUsername);
           break;
         case 720:
           const { default: updateStep2 } = await import(`./actions/update-step-2`);
-          console.log('ENTRANDDOOOO ', globalUsername);
           response = await updateStep2(request.message, globalUsername);
           break;
         default:

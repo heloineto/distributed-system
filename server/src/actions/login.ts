@@ -53,7 +53,7 @@ const login = async (message: TCPMessage) => {
         protocol: 102,
         message: {
           result: false,
-          reason: authErrors?.[error.code]?.message ?? error.message ?? error,
+          reason: authErrors?.[error?.code]?.message ?? error.message ?? error,
         },
         required: ['result'],
       };

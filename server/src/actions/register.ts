@@ -77,7 +77,7 @@ const register = async (message: TCPMessage) => {
         protocol: 702,
         message: {
           result: false,
-          reason: authErrors?.[error.code]?.message ?? error.message ?? error,
+          reason: authErrors?.[error?.code]?.message ?? error.message ?? error,
         },
         required: ['result', 'reason'],
       };
