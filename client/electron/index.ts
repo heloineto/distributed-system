@@ -39,6 +39,7 @@ app.on('ready', async () => {
 app.on('window-all-closed', app.quit);
 
 let socket: net.Socket;
+let ignoreFirst = false;
 
 ipcMain.on(
   'tcp-send',
@@ -51,6 +52,18 @@ ipcMain.on(
     }
   ) => {
     if (socket) {
+      if (ignoreFirst) {
+        console.log('SENDING WITH LENGTH: ', request);
+        const jsonStr = JSON.stringify(request);
+        const compatData = new Uint8Array(jsonStr.length + 1);
+        compatData[0] = jsonStr.length;
+        jsonStr
+          .split('')
+          .forEach((char, idx) => (compatData[idx + 1] = char.charCodeAt(0)));
+        socket.write(compatData);
+        return;
+      }
+
       console.log('SENDING: ', request);
       socket.write(JSON.stringify(request));
     }
@@ -65,10 +78,12 @@ ipcMain.on(
       host,
       port,
       encoding,
+      ignoreFirst,
     }: {
       host: string;
       port: number;
       encoding: BufferEncoding;
+      ignoreFirst: boolean;
     }
   ) => {
     if (socket) {
@@ -109,7 +124,7 @@ ipcMain.on(
       let response;
 
       try {
-        response = JSON.parse(data.toString());
+        response = JSON.parse(data.toString().substring(data.toString().indexOf('{')));
       } catch (error) {
         console.error('Error: response is not a valid JSON.', error);
         return;

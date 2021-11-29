@@ -21,12 +21,12 @@ const createServer = (
 
     socket.on('data', async (data) => {
       let request: TCPRequest;
-      console.log(data.toString());
 
       try {
-        if (ignoreFirst) request = JSON.parse(data.toString().substring(1));
-        else request = JSON.parse(data.toString());
+        console.log(data.toString());
+        request = JSON.parse(data.toString().substring(data.toString().indexOf('{')));
       } catch (error) {
+        console.log('ERROR: ', data, data.toString());
         console.error(`(${port}) ERRO: a solicitação não e um JSON valido.`);
         return;
       }
@@ -78,8 +78,19 @@ const createServer = (
       }
 
       if (response) {
-        socket.write(JSON.stringify(response));
-        console.info(`(${port}) SENT:`, response);
+        if (ignoreFirst) {
+          const jsonStr = JSON.stringify(response);
+          const compatData = new Uint8Array(jsonStr.length + 1);
+          compatData[0] = jsonStr.length;
+          jsonStr
+            .split('')
+            .forEach((char, idx) => (compatData[idx + 1] = char.charCodeAt(0)));
+          socket.write(compatData);
+          console.info(`(${port}) SENT:`, compatData, jsonStr);
+        } else {
+          socket.write(JSON.stringify(response));
+          console.info(`(${port}) SENT:`, response);
+        }
       }
     });
 
@@ -108,13 +119,13 @@ const main = async () => {
   });
   console.log(`Selecionado: ${encoding}`);
 
-  console.log('Ignorar o primeiro valor do buffer (Para socket implementado Java):');
+  console.log('Ignorar o primeiro valor do buffer (Para socket implementado em Java):');
   const { value }: { value: string } = await cliSelect({
-    values: ['Sim', 'Não'],
+    values: ['Não', 'Sim'],
   });
   console.log(`Selecionado: ${value}`);
 
-  createServer(20026, encoding, value === 'Sim');
+  createServer(20026, encoding, value == 'Sim');
 };
 
 main();

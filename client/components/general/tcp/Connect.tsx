@@ -1,5 +1,5 @@
 import { Button, Dialog, useMediaQuery, useTheme } from '@material-ui/core';
-import { Autocomplete, TextField } from 'mui-rff';
+import { Autocomplete, Switches, TextField } from 'mui-rff';
 import { useEffect, useState } from 'react';
 import { Form } from 'react-final-form';
 import { useSnackbar } from 'notistack';
@@ -44,15 +44,18 @@ const Connect = () => {
     host,
     port,
     encoding,
+    ignoreFirst,
   }: {
     host: string;
     port: string;
     encoding: BufferEncoding;
+    ignoreFirst: boolean;
   }) => {
     global.ipcRenderer.send('tcp-connection', {
       host,
       port: Number(port),
       encoding,
+      ignoreFirst,
     });
   };
 
@@ -93,6 +96,11 @@ const Connect = () => {
                   getOptionValue={(option) => option}
                   getOptionLabel={(option) => option}
                   renderOption={(option) => option}
+                />
+                <Switches
+                  label="Tamanho no ínicio"
+                  name="ignoreFirst"
+                  data={{ label: '', value: true }}
                 />
               </div>
               <Button
