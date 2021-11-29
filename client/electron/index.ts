@@ -39,7 +39,7 @@ app.on('ready', async () => {
 app.on('window-all-closed', app.quit);
 
 let socket: net.Socket;
-let ignoreFirst = false;
+let gIgnoreFirst = false;
 
 ipcMain.on(
   'tcp-send',
@@ -52,15 +52,11 @@ ipcMain.on(
     }
   ) => {
     if (socket) {
-      if (ignoreFirst) {
-        console.log('SENDING WITH LENGTH: ', request);
+      if (gIgnoreFirst) {
         const jsonStr = JSON.stringify(request);
-        const compatData = new Uint8Array(jsonStr.length + 1);
-        compatData[0] = jsonStr.length;
-        jsonStr
-          .split('')
-          .forEach((char, idx) => (compatData[idx + 1] = char.charCodeAt(0)));
-        socket.write(compatData);
+        const compatRequest = String.fromCharCode(jsonStr.length) + jsonStr;
+        console.log('SENDING WITH LENGTH: ', compatRequest);
+        socket.write(compatRequest);
         return;
       }
 
@@ -90,6 +86,8 @@ ipcMain.on(
       socket.end();
       console.log(`DESCONECTADO DO SOCKET`);
     }
+
+    gIgnoreFirst = ignoreFirst;
 
     socket = net.createConnection({ host, port });
     socket.setEncoding(encoding ?? 'utf8');

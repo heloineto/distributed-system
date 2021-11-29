@@ -80,13 +80,9 @@ const createServer = (
       if (response) {
         if (ignoreFirst) {
           const jsonStr = JSON.stringify(response);
-          const compatData = new Uint8Array(jsonStr.length + 1);
-          compatData[0] = jsonStr.length;
-          jsonStr
-            .split('')
-            .forEach((char, idx) => (compatData[idx + 1] = char.charCodeAt(0)));
-          socket.write(compatData);
-          console.info(`(${port}) SENT:`, compatData, jsonStr);
+          const compatResponse = String.fromCharCode(jsonStr.length) + jsonStr;
+          socket.write(compatResponse);
+          console.info(`(${port}) SENT:`, compatResponse);
         } else {
           socket.write(JSON.stringify(response));
           console.info(`(${port}) SENT:`, response);
@@ -119,7 +115,7 @@ const main = async () => {
   });
   console.log(`Selecionado: ${encoding}`);
 
-  console.log('Ignorar o primeiro valor do buffer (Para socket implementado em Java):');
+  console.log('Tamanho no ínicio do buffer (Compatibilidade com o Java):');
   const { value }: { value: string } = await cliSelect({
     values: ['Não', 'Sim'],
   });

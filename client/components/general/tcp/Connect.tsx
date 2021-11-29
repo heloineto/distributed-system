@@ -79,7 +79,6 @@ const Connect = () => {
                 <TextField label="Endereço IP" name="host" type="text" />
                 <TextField label="Porta" name="port" type="text" />
                 <Autocomplete
-                  // className="w-full"
                   label="Encoding"
                   name="encoding"
                   options={[
@@ -98,7 +97,7 @@ const Connect = () => {
                   renderOption={(option) => option}
                 />
                 <Switches
-                  label="Tamanho no ínicio"
+                  label="Tamanho no ínicio (Compatibilidade com o Java)"
                   name="ignoreFirst"
                   data={{ label: '', value: true }}
                 />
