@@ -1,5 +1,4 @@
 import net from 'net';
-const prompt = require('prompt-sync')();
 const cliSelect = require('cli-select');
 
 const protocols: { [key: number]: string } = {
@@ -87,8 +86,22 @@ const createServer = (port: number, encoding: BufferEncoding = 'utf8') => {
   server.listen(port, () => console.info(`Servidor ouvindo na porta ${port}`));
 };
 
-const enconding = prompt(
-  'Digite sua encoding (ascii, base64, utf8, hex, binary, latin1): '
-);
+cliSelect({
+  values: [
+    'utf8',
+    'ascii',
+    'base64',
+    'base64url',
+    'utf16le',
+    'ucs2',
+    'hex',
+    'binary',
+    'latin1',
+  ],
+}).then(({ value }: { value: BufferEncoding }) => {
+  const encoding: BufferEncoding = value;
 
-createServer(20026, enconding);
+  console.log(`Selected: ${value}`);
+
+  createServer(20026, encoding);
+});
