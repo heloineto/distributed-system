@@ -9,7 +9,11 @@ const protocols: { [key: number]: string } = {
   720: 'update-step-2',
 };
 
-const createServer = (port: number, encoding: BufferEncoding = 'utf8') => {
+const createServer = (
+  port: number,
+  encoding: BufferEncoding = 'utf8',
+  ignoreFirst: boolean = false
+) => {
   const server = net.createServer((socket) => {
     socket.setEncoding(encoding);
     console.log(`(${port}) Conexão estabelecida!`);
@@ -20,7 +24,8 @@ const createServer = (port: number, encoding: BufferEncoding = 'utf8') => {
       console.log(data.toString());
 
       try {
-        request = JSON.parse(data.toString());
+        if (ignoreFirst) request = JSON.parse(data.toString().substring(1));
+        else request = JSON.parse(data.toString());
       } catch (error) {
         console.error(`(${port}) ERRO: a solicitação não e um JSON valido.`);
         return;
@@ -86,22 +91,30 @@ const createServer = (port: number, encoding: BufferEncoding = 'utf8') => {
   server.listen(port, () => console.info(`Servidor ouvindo na porta ${port}`));
 };
 
-cliSelect({
-  values: [
-    'utf8',
-    'ascii',
-    'base64',
-    'base64url',
-    'utf16le',
-    'ucs2',
-    'hex',
-    'binary',
-    'latin1',
-  ],
-}).then(({ value }: { value: BufferEncoding }) => {
-  const encoding: BufferEncoding = value;
+const main = async () => {
+  console.log('Selecione uma codificação:');
+  const { value: encoding }: { value: BufferEncoding } = await cliSelect({
+    values: [
+      'utf8',
+      'ascii',
+      'base64',
+      'base64url',
+      'utf16le',
+      'ucs2',
+      'hex',
+      'binary',
+      'latin1',
+    ],
+  });
+  console.log(`Selecionado: ${encoding}`);
 
-  console.log(`Selected: ${value}`);
+  console.log('Ignorar o primeiro valor do buffer (Para socket implementado Java):');
+  const { value }: { value: string } = await cliSelect({
+    values: ['Sim', 'Não'],
+  });
+  console.log(`Selecionado: ${value}`);
 
-  createServer(20026, encoding);
-});
+  createServer(20026, encoding, value === 'Sim');
+};
+
+main();
