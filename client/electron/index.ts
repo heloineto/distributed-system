@@ -98,6 +98,11 @@ ipcMain.on(
       event.sender.send('tcp-connection', 'end');
     });
 
+    socket.on('close', () => {
+      console.log(`SOCKET ENDED`);
+      event.sender.send('tcp-connection', 'end');
+    });
+
     socket.on('data', (data) => {
       console.log(`RECIEVED : ${data}`);
 
