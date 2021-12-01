@@ -8,7 +8,9 @@ const protocols: { [key: number]: string } = {
   710: 'update-step-1',
   720: 'update-step-2',
   600: 'get-pending-list',
-  610: 'send-pending-list',
+  610: 'update-pending',
+  400: 'get-receptor-list',
+  510: 'donate',
 };
 
 const createServer = (
@@ -80,10 +82,18 @@ const createServer = (
           response = await getPendingList();
           break;
         case 610:
-          const { default: sendPendingList } = await import(
-            `./actions/send-pending-list`
+          const { default: updatePending } = await import(`./actions/update-pending`);
+          response = await updatePending(request.message);
+          break;
+        case 400:
+          const { default: getReceptorList } = await import(
+            `./actions/get-receptor-list`
           );
-          response = await sendPendingList(request.message);
+          response = await getReceptorList();
+          break;
+        case 510:
+          const { default: donate } = await import(`./actions/donate`);
+          response = await donate(request.message);
           break;
         default:
           break;

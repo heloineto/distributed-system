@@ -1,6 +1,7 @@
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 import * as yup from 'yup';
-import { auth } from '../lib/firebase';
+import { auth, firestore } from '../lib/firebase';
 import { authErrors, isFirebaseAuthError } from '../lib/utils/firebase';
 
 const loginSchema = yup.object().shape({
@@ -42,9 +43,14 @@ const login = async (message: TCPMessage) => {
       password + '*{`r=~D&5<Q2@pP'
     );
 
+    const userRef = doc(firestore, `users/${username}`);
+    const userDoc = await getDoc(userRef);
+
+    const { usertype } = userDoc.data() as any;
+
     return {
       protocol: 101,
-      message: { result: true },
+      message: { result: true, usertype },
       required: ['result'],
     };
   } catch (error) {

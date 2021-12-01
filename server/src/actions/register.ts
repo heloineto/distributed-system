@@ -64,7 +64,7 @@ const register = async (message: TCPMessage) => {
       name,
       state,
       city,
-      type: 1,
+      usertype: 1,
       receptor: 99,
     });
 

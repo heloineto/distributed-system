@@ -2,7 +2,7 @@ import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firesto
 import { firestore } from '../lib/firebase';
 import * as yup from 'yup';
 
-const sendPendingListSchema = yup.object().shape({
+const updatePendingSchema = yup.object().shape({
   username: yup
     .string()
     .required('Forneça um usuario')
@@ -10,9 +10,9 @@ const sendPendingListSchema = yup.object().shape({
   receptor: yup.number().required('Forneça um receptor'),
 });
 
-const sendPendingList = async (message: TCPMessage) => {
+const updatePending = async (message: TCPMessage) => {
   try {
-    sendPendingListSchema.validate(message);
+    updatePendingSchema.validate(message);
 
     const usersRef = collection(firestore, 'users');
     const usersQuery = query(usersRef, where('receptor', '==', '0'));
@@ -50,4 +50,4 @@ const sendPendingList = async (message: TCPMessage) => {
   }
 };
 
-export default sendPendingList;
+export default updatePending;
