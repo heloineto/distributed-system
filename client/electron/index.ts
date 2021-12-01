@@ -56,12 +56,12 @@ ipcMain.on(
         const jsonStr = JSON.stringify(request);
         const compatRequest = String.fromCharCode(jsonStr.length) + jsonStr;
         console.log('SENDING WITH LENGTH: ', compatRequest);
-        socket.write(compatRequest);
+        socket.write(compatRequest + '\n');
         return;
       }
 
       console.log('SENDING: ', request);
-      socket.write(JSON.stringify(request));
+      socket.write(JSON.stringify(request) + '\n');
     }
   }
 );

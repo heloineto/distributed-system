@@ -81,10 +81,10 @@ const createServer = (
         if (ignoreFirst) {
           const jsonStr = JSON.stringify(response);
           const compatResponse = String.fromCharCode(jsonStr.length) + jsonStr;
-          socket.write(compatResponse);
+          socket.write(compatResponse + '\n');
           console.info(`(${port}) SENT:`, compatResponse);
         } else {
-          socket.write(JSON.stringify(response));
+          socket.write(JSON.stringify(response) + '\n');
           console.info(`(${port}) SENT:`, response);
         }
       }

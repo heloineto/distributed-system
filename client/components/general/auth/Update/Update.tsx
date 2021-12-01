@@ -57,7 +57,7 @@ const Update = () => {
         city,
         state,
         password,
-        //! receptor,
+        receptor: 0,
       },
       required: ['name', 'city', 'state', 'password', 'receptor'],
     });
