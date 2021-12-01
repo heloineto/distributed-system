@@ -100,6 +100,19 @@ const useTCPListener = () => {
       handle: (message: any) =>
         enqueueSnackbar(message?.reason ?? defErrorMsg, { variant: 'error' }),
     },
+    901: {
+      name: 'remove-success',
+      handle: () =>
+        enqueueSnackbar('Usuário deletado com sucesso!', {
+          variant: 'success',
+        }),
+    },
+    902: {
+      name: 'remove-error',
+      variant: 'error',
+      handle: (message: any) =>
+        enqueueSnackbar(message?.reason ?? defErrorMsg, { variant: 'error' }),
+    },
   };
 
   useEffect(() => {

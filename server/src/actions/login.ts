@@ -23,14 +23,14 @@ const login = async (message: TCPMessage) => {
       return {
         protocol: 102,
         message: { result: false, reason: error.message },
-        required: ['result'],
+        required: ['result', 'reason'],
       };
     }
 
     return {
       protocol: 102,
       message: { result: false, reason: 'Erro desconhecido' },
-      required: ['result'],
+      required: ['result', 'reason'],
     };
   }
 
@@ -51,7 +51,7 @@ const login = async (message: TCPMessage) => {
     return {
       protocol: 101,
       message: { result: true, usertype },
-      required: ['result'],
+      required: ['result', 'usertype'],
     };
   } catch (error) {
     if (isFirebaseAuthError(error)) {
@@ -61,13 +61,17 @@ const login = async (message: TCPMessage) => {
           result: false,
           reason: authErrors?.[error?.code]?.message ?? error.message ?? error,
         },
-        required: ['result'],
+        required: ['result', 'reason'],
       };
     }
 
     return {
       protocol: 102,
-      message: { result: false, reason: 'Erro desconhecido', required: ['result'] },
+      message: {
+        result: false,
+        reason: 'Erro desconhecido',
+        required: ['result', 'reason'],
+      },
     };
   }
 };

@@ -52,11 +52,11 @@ const ReceptorList = (props: Props) => {
     global.ipcRenderer.send('tcp-send', {
       protocol: 510,
       message: {
-        value,
         donor,
         receptor,
+        value,
       },
-      required: ['username', 'receptor'],
+      required: ['donor', 'receptor', 'value'],
     });
   };
 

@@ -16,19 +16,25 @@ const remove = async (message: TCPMessage) => {
     const { username } = message;
     await auth.currentUser?.delete();
     await deleteDoc(doc(firestore, `users/${username}`));
+
+    return {
+      protocol: 901,
+      message: { result: true },
+      required: ['result'],
+    };
   } catch (error) {
     if (error instanceof yup.ValidationError) {
       return {
-        protocol: 102,
+        protocol: 902,
         message: { result: false, reason: error.message },
-        required: ['result'],
+        required: ['result', 'reason'],
       };
     }
 
     return {
-      protocol: 102,
+      protocol: 902,
       message: { result: false, reason: 'Erro desconhecido' },
-      required: ['result'],
+      required: ['result', 'reason'],
     };
   }
 };

@@ -46,13 +46,13 @@ const getReceptorList = async (message: TCPMessage) => {
       required: ['result', 'list'],
     };
   } catch (error) {
-    if (error instanceof yup.ValidationError) {
-      return {
-        protocol: 402,
-        message: { result: false, reason: error.message },
-        required: ['result'],
-      };
-    }
+    // if (error instanceof yup.ValidationError) {
+    //   return {
+    //     protocol: 402,
+    //     message: { result: false, reason: error.message },
+    //     required: ['result'],
+    //   };
+    // }
 
     return;
   }

@@ -34,7 +34,7 @@ const donate = async (message: TCPMessage) => {
       return {
         protocol: 512,
         message: { result: false, reason: error.message },
-        required: ['result'],
+        required: ['result', 'reason'],
       };
     }
 
