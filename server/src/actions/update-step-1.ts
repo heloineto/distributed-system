@@ -39,7 +39,7 @@ const updateStep1 = async (message: TCPMessage) => {
     const userRef = doc(firestore, `users/${username}`);
     const userDoc = await getDoc(userRef);
 
-    const { name, city, state, receptor } = userDoc.data() as any;
+    const { name, city, state, receptor, password } = userDoc.data() as any;
 
     return {
       response: {
@@ -49,7 +49,7 @@ const updateStep1 = async (message: TCPMessage) => {
           name,
           city,
           state,
-          password: '',
+          password,
           receptor: receptor ?? 99,
         },
         required: ['result', 'name', 'city', 'state', 'password', 'receptor'],

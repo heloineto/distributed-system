@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
 import * as yup from 'yup';
 import { auth, firestore } from '../lib/firebase';
 import { authErrors, isFirebaseAuthError } from '../lib/utils/firebase';
@@ -23,6 +23,7 @@ const updateStep2Schema = yup.object().shape({
     .string()
     .required('Forneça uma senha')
     .max(8, 'A senha pode ter no maximo 8 caracteres'),
+  receptor: yup.number().required('Forneça um receptor'),
 });
 
 const updateStep2 = async (message: TCPMessage, globalUsername = 'user') => {
@@ -45,7 +46,7 @@ const updateStep2 = async (message: TCPMessage, globalUsername = 'user') => {
   }
 
   try {
-    const { password, name, state, city } = message;
+    const { password, name, state, city, receptor } = message;
 
     //! delete old user
 
@@ -56,12 +57,13 @@ const updateStep2 = async (message: TCPMessage, globalUsername = 'user') => {
     ).catch((error) => {});
 
     const userRef = doc(firestore, `users/${globalUsername}`);
-    await setDoc(userRef, {
-      globalUsername,
+
+    await updateDoc(userRef, {
       password,
       name,
       state,
       city,
+      receptor,
     });
 
     return {

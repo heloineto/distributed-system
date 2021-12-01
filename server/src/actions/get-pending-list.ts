@@ -4,7 +4,7 @@ import { firestore } from '../lib/firebase';
 const getPendingList = async () => {
   try {
     const usersRef = collection(firestore, 'users');
-    const usersQuery = query(usersRef, where('receptor', '==', '0'));
+    const usersQuery = query(usersRef, where('receptor', '==', 0));
     const usersSnapshot = await getDocs(usersQuery);
 
     const users = usersSnapshot.docs.map((userDoc) => {

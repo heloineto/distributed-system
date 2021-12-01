@@ -5,27 +5,76 @@ import {
   XCircleIcon,
 } from '@heroicons/react/solid';
 import { Button } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import pendingUserSchema from './utils/pendingUserSchema';
 
 interface Props {}
-const people = [
-  {
-    name: 'Jane Cooper',
-    city: 'Ponta Grossa',
-    state: 'PR',
-    username: 'janecooper',
-  },
-  // More people...
-];
+
+interface PendingUser {
+  name: string;
+  city: string;
+  state: string;
+  username: string;
+}
 
 const PendingList = (props: Props) => {
+  const [pendingUsers, setPendingUsers] = useState<PendingUser[]>([]);
+  const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    // if (!user) {
+    //   enqueueSnackbar('Usuário deslogado', { variant: 'error' });
+    //   router.push('/enter');
+    //   return;
+    // }
+
+    global.ipcRenderer.send('tcp-send', {
+      protocol: 600,
+    });
+
+    const listener: (...args: any[]) => void = (_event, response) => {
+      const { protocol, message } = response;
+
+      if (protocol == 601) {
+        const { list } = message;
+
+        if (!list) {
+          enqueueSnackbar('O servidor não retornou uma lista na mensagem', {
+            variant: 'error',
+          });
+          return;
+        }
+
+        try {
+          list.forEach((each: any) => pendingUserSchema.validate(each));
+          setPendingUsers(list);
+        } catch (error) {
+          enqueueSnackbar(
+            'Um ou mais usuarios na lista retornada do servidor estão incorretos',
+            {
+              variant: 'error',
+            }
+          );
+        }
+      }
+    };
+
+    global.ipcRenderer.addListener('tcp-recieve', listener);
+
+    return () => {
+      global.ipcRenderer.removeListener('tcp-recieve', listener);
+    };
+  }, []);
+
   return (
     <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 m-5">
-      {people.map(({ name, city, state, username }) => (
+      {pendingUsers.map(({ name, city, state, username }) => (
         <li
           key={username}
           className="col-span-1 bg-white rounded-lg shadow divide-y divide-gray-200"
         >
-          <div className="w-full flex items-center justify-between p-6 space-x-6">
+          <div className="w-full flex items-center justify-between p-5 pb-2 space-x-6">
             <div className="flex-1 truncate">
               <div className="flex items-center space-x-3">
                 <h3 className="text-gray-900 text-sm font-medium truncate">{name}</h3>
@@ -37,15 +86,15 @@ const PendingList = (props: Props) => {
             </div>
           </div>
           <div>
-            <div className="-mt-px flex divide-x divide-gray-200">
-              <div className="w-0 flex-1 flex">
-                <Button className="bg-green-100 text-green-600 rounded-none relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm font-medium border border-transparent rounded-bl-lg hover:text-green-500">
+            <div className="flex divide-gray-200">
+              <div className="w-0 flex-1 flex p-2.5">
+                <Button className="bg-green-500 text-white relative flex-1 py-4 text-sm hover:bg-green-600">
                   <CheckCircleIcon className="w-5 h-5" aria-hidden="true" />
                   <span className="ml-3">Aceitar</span>
                 </Button>
               </div>
-              <div className="-ml-px w-0 flex-1 flex">
-                <Button className="bg-red-100 text-red-600 relative w-0 flex-1 rounded-none inline-flex items-center justify-center py-4 text-sm font-medium border border-transparent rounded-br-lg hover:text-red-500">
+              <div className="-ml-px w-0 flex-1 flex p-2.5">
+                <Button className="bg-red-500 text-white relative flex-1 py-4 text-sm hover:bg-red-600">
                   <XCircleIcon className="w-5 h-5" aria-hidden="true" />
                   <span className="ml-3">Rejeitar</span>
                 </Button>
