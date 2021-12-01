@@ -25,7 +25,7 @@ const MainShell = ({ children, sideBarProps }: Props) => {
         <div className="flex flex-col w-0 flex-1 overflow-hidden">
           <Navbar toggleMobileSideBarOpen={toggleMobileSideBarOpen} />
 
-          <main className="flex-1 relative focus:outline-none overflow-y-hidden">
+          <main className="flex-1 relative focus:outline-none overflow-y-auto">
             {children}
           </main>
         </div>

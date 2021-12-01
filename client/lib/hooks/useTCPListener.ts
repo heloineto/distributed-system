@@ -87,6 +87,19 @@ const useTCPListener = () => {
           variant: 'success',
         }),
     },
+    511: {
+      name: 'donate-success',
+      handle: () =>
+        enqueueSnackbar('Doação realizada com sucesso!', {
+          variant: 'success',
+        }),
+    },
+    512: {
+      name: 'donate-error',
+      variant: 'error',
+      handle: (message: any) =>
+        enqueueSnackbar(message?.reason ?? defErrorMsg, { variant: 'error' }),
+    },
   };
 
   useEffect(() => {
