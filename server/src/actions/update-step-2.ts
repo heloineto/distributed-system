@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import * as yup from 'yup';
 import { auth, firestore } from '../lib/firebase';
 import { authErrors, isFirebaseAuthError } from '../lib/utils/firebase';
@@ -46,6 +46,8 @@ const updateStep2 = async (message: TCPMessage, globalUsername = 'user') => {
 
   try {
     const { password, name, state, city } = message;
+
+    //! delete old user
 
     await createUserWithEmailAndPassword(
       auth,

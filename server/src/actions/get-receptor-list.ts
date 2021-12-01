@@ -13,21 +13,15 @@ const getReceptorList = async () => {
     });
 
     return {
-      protocol: 601,
+      protocol: 401,
       message: {
         result: true,
         list: users,
       },
+      required: ['result', 'list'],
     };
   } catch (error) {
-    return {
-      protocol: 602,
-      message: {
-        result: false,
-        reason: String(error) ?? '',
-      },
-      required: ['result'],
-    };
+    return;
   }
 };
 

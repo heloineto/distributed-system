@@ -27,10 +27,9 @@ const createServer = (
       let request: TCPRequest;
 
       try {
-        console.log(data.toString());
+        console.log(`(${port}) RECEIVED (RAW):`, data.toString());
         request = JSON.parse(data.toString().substring(data.toString().indexOf('{')));
       } catch (error) {
-        console.log('ERROR: ', data, data.toString());
         console.error(`(${port}) ERRO: a solicitação não e um JSON valido.`);
         return;
       }

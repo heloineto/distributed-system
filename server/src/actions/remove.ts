@@ -12,6 +12,7 @@ const removeSchema = yup.object().shape({
 const remove = async (message: TCPMessage) => {
   try {
     removeSchema.validate(message);
+
     const { username } = message;
     await deleteDoc(doc(firestore, `users/${username}`));
   } catch (error) {

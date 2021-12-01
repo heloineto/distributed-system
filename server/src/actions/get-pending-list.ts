@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { firestore } from '../lib/firebase';
 
 const getPendingList = async () => {
@@ -18,6 +18,7 @@ const getPendingList = async () => {
         result: true,
         list: users,
       },
+      required: ['result', 'list'],
     };
   } catch (error) {
     return {
@@ -26,7 +27,7 @@ const getPendingList = async () => {
         result: false,
         reason: String(error) ?? 'Erro desconhecido',
       },
-      required: ['result'],
+      required: ['result', 'reason'],
     };
   }
 };
