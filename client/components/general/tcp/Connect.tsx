@@ -68,7 +68,7 @@ const Connect = () => {
         <Form
           onSubmit={connect}
           initialValues={{
-            host: '10.20.50.26',
+            // host: '10.20.50.26',
             port: '20026',
             encoding: 'utf8',
           }}
@@ -97,7 +97,7 @@ const Connect = () => {
                   renderOption={(option) => option}
                 />
                 <Switches
-                  label="Tamanho no ínicio (Compatibilidade com o Java)"
+                  label="Tamanho no ínicio (compatibilidade)"
                   name="ignoreFirst"
                   data={{ label: '', value: true }}
                 />

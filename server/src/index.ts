@@ -7,6 +7,8 @@ const protocols: { [key: number]: string } = {
   700: 'register',
   710: 'update-step-1',
   720: 'update-step-2',
+  600: 'get-pending-list',
+  610: 'send-pending-list',
 };
 
 const createServer = (
@@ -73,6 +75,16 @@ const createServer = (
           const { default: updateStep2 } = await import(`./actions/update-step-2`);
           response = await updateStep2(request.message, globalUsername);
           break;
+        case 600:
+          const { default: getPendingList } = await import(`./actions/get-pending-list`);
+          response = await getPendingList();
+          break;
+        case 610:
+          const { default: sendPendingList } = await import(
+            `./actions/send-pending-list`
+          );
+          response = await sendPendingList(request.message);
+          break;
         default:
           break;
       }
@@ -115,7 +127,7 @@ const main = async () => {
   });
   console.log(`Selecionado: ${encoding}`);
 
-  console.log('Tamanho no ínicio do buffer (Compatibilidade com o Java):');
+  console.log('Tamanho no ínicio do buffer (p/ compatibilidade):');
   const { value }: { value: string } = await cliSelect({
     values: ['Não', 'Sim'],
   });

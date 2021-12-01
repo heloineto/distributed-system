@@ -1,4 +1,4 @@
-import { TextField, makeValidate, Autocomplete } from 'mui-rff';
+import { TextField, makeValidate, Autocomplete, Switches } from 'mui-rff';
 import { Button, InputAdornment } from '@material-ui/core';
 import PasswordField from '@components/inputs/PasswordField';
 import { Form } from 'react-final-form';
@@ -136,6 +136,11 @@ const Update = () => {
                     renderOption={(option) => option}
                   />
                 </div>
+                <Switches
+                  label="Receptor"
+                  name="receptor"
+                  data={{ label: '', value: true }}
+                />
               </div>
               <Button
                 className="w-full mt-4 shadow-indigo-500 disabled:shadow-none disabled:bg-indigo-200"

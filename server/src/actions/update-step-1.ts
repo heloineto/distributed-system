@@ -41,8 +41,6 @@ const updateStep1 = async (message: TCPMessage) => {
 
     const { name, city, state, receptor } = userDoc.data() as any;
 
-    //! Do que se trata esse receptor?
-
     return {
       response: {
         protocol: 711,
