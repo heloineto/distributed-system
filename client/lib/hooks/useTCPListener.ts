@@ -80,6 +80,13 @@ const useTCPListener = () => {
       handle: (message: any) =>
         enqueueSnackbar(message?.reason ?? defErrorMsg, { variant: 'error' }),
     },
+    401: {
+      name: 'get-receptor-list-success',
+      handle: () =>
+        enqueueSnackbar('Lista de receptores recebida!', {
+          variant: 'success',
+        }),
+    },
   };
 
   useEffect(() => {

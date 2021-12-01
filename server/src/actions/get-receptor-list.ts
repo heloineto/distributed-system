@@ -4,7 +4,7 @@ import { firestore } from '../lib/firebase';
 const getReceptorList = async () => {
   try {
     const usersRef = collection(firestore, 'users');
-    const usersQuery = query(usersRef, where('receptor', '==', '1'));
+    const usersQuery = query(usersRef, where('receptor', '==', 1));
     const usersSnapshot = await getDocs(usersQuery);
 
     const users = usersSnapshot.docs.map((userDoc) => {

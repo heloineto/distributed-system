@@ -5,10 +5,68 @@ import {
   UserIcon,
 } from '@heroicons/react/solid';
 import { Button } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import receptorsSchema from './utils/receptorsSchema';
 
 interface Props {}
 
 const ReceptorList = (props: Props) => {
+  const { enqueueSnackbar } = useSnackbar();
+  const [receptors, setReceptors] = useState<PendingUser[]>([]);
+
+  // const handleClick = (username: string, receptor: number) => {
+  //   global.ipcRenderer.send('tcp-send', {
+  //     protocol: 510,
+  //     message: {
+  //       username,
+  //       receptor,
+  //     },
+  //     required: ['username', 'receptor'],
+  //   });
+
+  //   global.ipcRenderer.send('tcp-send', {
+  //     protocol: 400,
+  //   });
+  // };
+
+  useEffect(() => {
+    global.ipcRenderer.send('tcp-send', {
+      protocol: 400,
+    });
+
+    const listener: (...args: any[]) => void = (_event, response) => {
+      const { protocol, message } = response;
+
+      if (protocol == 601) {
+        const { list } = message;
+
+        if (!list) {
+          enqueueSnackbar('O servidor não retornou uma lista na mensagem', {
+            variant: 'error',
+          });
+          return;
+        }
+
+        try {
+          list.forEach((each: any) => receptorsSchema.validate(each));
+          setReceptors(list);
+        } catch (error) {
+          enqueueSnackbar(
+            'Um ou mais usuarios na lista retornada do servidor estão incorretos',
+            { variant: 'error' }
+          );
+        }
+      }
+    };
+
+    global.ipcRenderer.addListener('tcp-recieve', listener);
+
+    return () => {
+      global.ipcRenderer.removeListener('tcp-recieve', listener);
+    };
+  }, []);
+
   return (
     <div className="p-5">
       <div className="lg:flex lg:items-center lg:justify-between col-span-1 bg-white rounded-lg shadow p-4">
