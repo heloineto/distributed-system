@@ -22,13 +22,22 @@ const PendingList = (props: Props) => {
   const [pendingUsers, setPendingUsers] = useState<PendingUser[]>([]);
   const { enqueueSnackbar } = useSnackbar();
 
-  useEffect(() => {
-    // if (!user) {
-    //   enqueueSnackbar('Usuário deslogado', { variant: 'error' });
-    //   router.push('/enter');
-    //   return;
-    // }
+  const handleClick = (username: string, receptor: number) => {
+    global.ipcRenderer.send('tcp-send', {
+      protocol: 610,
+      message: {
+        username,
+        receptor,
+      },
+      required: ['username', 'receptor'],
+    });
 
+    global.ipcRenderer.send('tcp-send', {
+      protocol: 600,
+    });
+  };
+
+  useEffect(() => {
     global.ipcRenderer.send('tcp-send', {
       protocol: 600,
     });
@@ -52,9 +61,7 @@ const PendingList = (props: Props) => {
         } catch (error) {
           enqueueSnackbar(
             'Um ou mais usuarios na lista retornada do servidor estão incorretos',
-            {
-              variant: 'error',
-            }
+            { variant: 'error' }
           );
         }
       }
@@ -88,13 +95,19 @@ const PendingList = (props: Props) => {
           <div>
             <div className="flex divide-gray-200">
               <div className="w-0 flex-1 flex p-2.5">
-                <Button className="bg-green-500 text-white relative flex-1 py-4 text-sm hover:bg-green-600">
+                <Button
+                  className="bg-green-500 text-white relative flex-1 py-4 text-sm hover:bg-green-600"
+                  onClick={() => handleClick(username, 1)}
+                >
                   <CheckCircleIcon className="w-5 h-5" aria-hidden="true" />
                   <span className="ml-3">Aceitar</span>
                 </Button>
               </div>
               <div className="-ml-px w-0 flex-1 flex p-2.5">
-                <Button className="bg-red-500 text-white relative flex-1 py-4 text-sm hover:bg-red-600">
+                <Button
+                  className="bg-red-500 text-white relative flex-1 py-4 text-sm hover:bg-red-600"
+                  onClick={() => handleClick(username, 99)}
+                >
                   <XCircleIcon className="w-5 h-5" aria-hidden="true" />
                   <span className="ml-3">Rejeitar</span>
                 </Button>
