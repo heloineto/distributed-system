@@ -14,10 +14,14 @@ const Enter = () => {
 
   useEffect(() => {
     const listener: (...args: any[]) => void = (_event, response) => {
-      const { protocol } = response;
-      console.log(userData);
+      const { protocol, message } = response;
 
-      if (protocol == 101) setUser?.(userData);
+      if (protocol == 101)
+        setUser?.({
+          username: userData?.username ?? '',
+          password: userData?.password,
+          usertype: message?.usertype ?? 1,
+        });
     };
 
     global.ipcRenderer.addListener('tcp-recieve', listener);
