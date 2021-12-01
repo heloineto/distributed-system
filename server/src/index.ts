@@ -89,7 +89,7 @@ const createServer = (
           const { default: getReceptorList } = await import(
             `./actions/get-receptor-list`
           );
-          response = await getReceptorList();
+          response = await getReceptorList(request.message);
           break;
         case 510:
           const { default: donate } = await import(`./actions/donate`);

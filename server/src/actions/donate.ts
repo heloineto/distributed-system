@@ -30,11 +30,19 @@ const donate = async (message: TCPMessage) => {
       required: ['result'],
     };
   } catch (error) {
+    if (error instanceof yup.ValidationError) {
+      return {
+        protocol: 512,
+        message: { result: false, reason: error.message },
+        required: ['result'],
+      };
+    }
+
     return {
       protocol: 512,
       message: {
         result: false,
-        reason: String(error) ?? 'Erro desconhecido',
+        reason: 'Erro desconhecido',
       },
       required: ['result', 'reason'],
     };

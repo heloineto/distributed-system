@@ -24,6 +24,7 @@
     "electron-is-dev": "^1.1.0",
     "electron-next": "^3.1.5",
     "final-form": "^4.20.4",
+    "lodash": "^4.17.21",
     "mui-rff": "^3.0.16",
     "notistack": "^1.0.10",
     "react": "^17.0.2",

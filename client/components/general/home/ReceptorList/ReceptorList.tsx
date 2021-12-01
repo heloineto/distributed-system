@@ -5,12 +5,21 @@ import {
   UserIcon,
 } from '@heroicons/react/solid';
 import { UserContext } from '@lib/context';
-import { Button, ListItemIcon, ListItemText, MenuItem } from '@material-ui/core';
-import { Select, TextField } from 'mui-rff';
+import {
+  Button,
+  InputAdornment,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+} from '@material-ui/core';
+import { Autocomplete, Select, TextField } from 'mui-rff';
 import { useSnackbar } from 'notistack';
 import { useContext, useEffect, useState } from 'react';
 import { Form } from 'react-final-form';
 import receptorsSchema from './utils/receptorsSchema';
+import { useBrazilianStates, useBrazilianCities } from '@lib/hooks';
+import { SearchIcon } from '@heroicons/react/outline';
+import { isNil, omitBy } from 'lodash';
 
 interface Props {}
 
@@ -18,6 +27,26 @@ const ReceptorList = (props: Props) => {
   const { enqueueSnackbar } = useSnackbar();
   const [receptors, setReceptors] = useState<PendingUser[]>([]);
   const { user } = useContext(UserContext);
+  const brazilianStates = useBrazilianStates();
+  const brazilianCities = useBrazilianCities();
+
+  const handleFilter = ({ name, username, state, city }: User) => {
+    global.ipcRenderer.send('tcp-send', {
+      protocol: 400,
+      message: {
+        filter: omitBy(
+          {
+            name,
+            username,
+            state,
+            city,
+          },
+          isNil
+        ),
+      },
+      required: ['filter'],
+    });
+  };
 
   const donate = ({ value }: any, donor: string, receptor: string) => {
     global.ipcRenderer.send('tcp-send', {
@@ -34,6 +63,8 @@ const ReceptorList = (props: Props) => {
   useEffect(() => {
     global.ipcRenderer.send('tcp-send', {
       protocol: 400,
+      message: { filter: {} },
+      required: ['filter'],
     });
 
     const listener: (...args: any[]) => void = (_event, response) => {
@@ -70,6 +101,81 @@ const ReceptorList = (props: Props) => {
 
   return (
     <div className="p-5 flex flex-col gap-y-2.5 overflow-y-auto">
+      <Form onSubmit={handleFilter}>
+        {({ handleSubmit, submitting, values }) => (
+          <form
+            onSubmit={handleSubmit}
+            className="flex gap-x-5 bg-white rounded-lg shadow p-4"
+          >
+            <div className="w-full">
+              <div className="flex flex-col space-y-2">
+                <TextField label="Nome" name="name" type="text" size="small" />
+                <div className="flex gap-x-5">
+                  <Autocomplete
+                    className="w-full"
+                    label="Estado"
+                    name="state"
+                    size="small"
+                    options={brazilianStates}
+                    getOptionValue={(option) => option.abbr}
+                    getOptionLabel={(option) => option.name}
+                    renderOption={({ name, abbr }) => (
+                      <div className="flex items-center gap-x-2">
+                        <img
+                          className="h-4 rounded-sm"
+                          src={`br-flags/${abbr}.jpg`}
+                          alt={`${name}'s flag`}
+                        />
+                        {name}
+                      </div>
+                    )}
+                    textFieldProps={{
+                      InputProps: values.state
+                        ? {
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <img
+                                  className="h-5 rounded-sm"
+                                  src={`br-flags/${values.state}.jpg`}
+                                  alt={`${name}'s flag`}
+                                />
+                              </InputAdornment>
+                            ),
+                          }
+                        : undefined,
+                    }}
+                  />
+                  <Autocomplete
+                    className="w-full"
+                    label="Cidade"
+                    size="small"
+                    name="city"
+                    disabled={!values.state}
+                    options={
+                      values.state
+                        ? brazilianCities[values.state as keyof typeof brazilianCities]
+                        : []
+                    }
+                    getOptionValue={(option) => option}
+                    getOptionLabel={(option) => option}
+                    renderOption={(option) => option}
+                  />
+                </div>
+                <TextField label="Usuário" name="username" type="text" size="small" />
+              </div>
+            </div>
+            <div>
+              <Button
+                type="submit"
+                className="w-40 h-full px-4 py-2 rounded-md text-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                <SearchIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+                Filtrar
+              </Button>
+            </div>
+          </form>
+        )}
+      </Form>
       {receptors.map(({ name, city, state, username }) => (
         <div
           key={username}
