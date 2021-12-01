@@ -65,7 +65,7 @@ const Navbar = ({ toggleMobileSideBarOpen }: Props) => {
               required: ['username'],
             });
 
-            setUser(null);
+            setUser?.(null);
           }
         }}
       />

@@ -1,4 +1,10 @@
-import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/solid';
+import {
+  CheckCircleIcon,
+  LocationMarkerIcon,
+  OfficeBuildingIcon,
+  UserIcon,
+  XCircleIcon,
+} from '@heroicons/react/solid';
 import { Button } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
@@ -69,15 +75,34 @@ const PendingList = (props: Props) => {
           key={username}
           className="col-span-1 bg-white rounded-lg shadow divide-y divide-gray-200"
         >
-          <div className="w-full flex items-center justify-between p-5 pb-2 space-x-6">
+          <div className="w-full flex items-center justify-between px-5 pt-4 pb-2 space-x-6">
             <div className="flex-1 truncate">
               <div className="flex items-center space-x-3">
-                <h3 className="text-gray-900 text-sm font-medium truncate">{name}</h3>
-                <span className="flex-shrink-0 inline-block px-2 py-0.5 text-gray-800 text-xs font-medium bg-gray-200 rounded-full">
-                  @{username}
+                <h3 className="text-gray-900 text-lg font-semibold truncate">{name}</h3>
+                <span className="flex-shrink-0 inline-flex justify-center items-center px-2 py-0.5 text-gray-800 text-xs font-medium bg-gray-200 rounded-full">
+                  <UserIcon
+                    className="flex-shrink-0 mr-1.5 h-3 w-3 text-gray-400"
+                    aria-hidden="true"
+                  />
+                  {username}
                 </span>
               </div>
-              <p className="mt-1 text-gray-500 text-sm truncate">{`${city} - ${state}`}</p>
+              <div className="flex justify-start items-center gap-x-3">
+                <div className="mt-2 flex items-center text-sm text-gray-500">
+                  <OfficeBuildingIcon
+                    className="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400"
+                    aria-hidden="true"
+                  />
+                  {city}
+                </div>
+                <div className="mt-2 flex items-center text-sm text-gray-500">
+                  <LocationMarkerIcon
+                    className="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400"
+                    aria-hidden="true"
+                  />
+                  {state}
+                </div>
+              </div>
             </div>
           </div>
           <div>
