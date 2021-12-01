@@ -1,21 +1,25 @@
-import { useMemo } from 'react';
-
+import { useContext, useMemo } from 'react';
 import {
   CurrencyDollarIcon as CurrencyDollarIconOutlined,
   CogIcon as CogIconOutlined,
   HomeIcon as HomeIconOutlined,
   ChatAlt2Icon as ChatAlt2IconOutlined,
+  ShieldCheckIcon as ShieldCheckIconOutlined,
 } from '@heroicons/react/outline';
 import {
   CurrencyDollarIcon as CurrencyDollarIconSolid,
   CogIcon as CogIconSolid,
   HomeIcon as HomeIconSolid,
   ChatAlt2Icon as ChatAlt2IconSolid,
+  ShieldCheckIcon as ShieldCheckIconSolid,
 } from '@heroicons/react/solid';
+import { UserContext } from '@lib/context';
 
 const useNavItems = () => {
-  const sidebarNavItems = useMemo(
-    () => [
+  const { user } = useContext(UserContext);
+
+  const sidebarNavItems = useMemo(() => {
+    const res = [
       {
         name: 'dashboard',
         label: 'Painel',
@@ -44,9 +48,20 @@ const useNavItems = () => {
         IconSolid: CogIconSolid,
         href: '/settings',
       },
-    ],
-    []
-  );
+    ];
+
+    if (user?.usertype == 3) {
+      res.push({
+        name: 'admin',
+        label: 'Admin',
+        IconOutlined: ShieldCheckIconOutlined,
+        IconSolid: ShieldCheckIconSolid,
+        href: '/admin',
+      });
+    }
+
+    return res;
+  }, [user]);
 
   return sidebarNavItems;
 };

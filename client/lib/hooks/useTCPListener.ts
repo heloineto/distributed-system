@@ -54,6 +54,32 @@ const useTCPListener = () => {
       handle: (message: any) =>
         enqueueSnackbar(message?.reason ?? defErrorMsg, { variant: 'error' }),
     },
+    601: {
+      name: 'get-pending-list-success',
+      handle: () =>
+        enqueueSnackbar('Lista de pendentes recebida!', {
+          variant: 'success',
+        }),
+    },
+    602: {
+      name: 'get-pending-list-error',
+      variant: 'error',
+      handle: (message: any) =>
+        enqueueSnackbar(message?.reason ?? defErrorMsg, { variant: 'error' }),
+    },
+    611: {
+      name: 'update-pending-success',
+      handle: () =>
+        enqueueSnackbar('Tipo do usuário alterado com sucesso!', {
+          variant: 'success',
+        }),
+    },
+    612: {
+      name: 'update-pending-error',
+      variant: 'error',
+      handle: (message: any) =>
+        enqueueSnackbar(message?.reason ?? defErrorMsg, { variant: 'error' }),
+    },
   };
 
   useEffect(() => {

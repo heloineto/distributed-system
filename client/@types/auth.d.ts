@@ -4,4 +4,5 @@ interface User {
   name?: string;
   state?: string;
   city?: string;
+  usertype?: number;
 }
