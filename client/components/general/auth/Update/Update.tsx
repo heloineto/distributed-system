@@ -15,6 +15,7 @@ const Update = () => {
   const { user } = useContext(UserContext);
   const [loading, setLoading] = useState(true);
   const [initialValues, setInitialValues] = useState<User | null>(user);
+  const [alreadyReceptor, setAlreadyReceptor] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -36,8 +37,10 @@ const Update = () => {
     const listener: (...args: any[]) => void = (_event, response) => {
       const { protocol, message } = response;
 
+      setAlreadyReceptor(message?.receptor == 1);
+
       if (protocol == 711) {
-        setInitialValues({ ...user, ...message });
+        setInitialValues({ ...user, ...message, receptor: message?.receptor != 99 });
         setLoading(false);
       }
     };
@@ -49,7 +52,7 @@ const Update = () => {
     };
   }, []);
 
-  const update = ({ name, state, city, password }: User) => {
+  const update = ({ name, state, city, password, receptor }: User) => {
     global.ipcRenderer.send('tcp-send', {
       protocol: 720,
       message: {
@@ -57,7 +60,7 @@ const Update = () => {
         city,
         state,
         password,
-        receptor: 0,
+        receptor: alreadyReceptor ? 1 : receptor ? 0 : 99,
       },
       required: ['name', 'city', 'state', 'password', 'receptor'],
     });
@@ -136,11 +139,19 @@ const Update = () => {
                     renderOption={(option) => option}
                   />
                 </div>
-                <Switches
-                  label="Receptor"
-                  name="receptor"
-                  data={{ label: '', value: true }}
-                />
+                <div className="mx-auto">
+                  <Switches
+                    className="mx-auto"
+                    label={
+                      alreadyReceptor
+                        ? 'Receptor (você é receptor)'
+                        : 'Quero Ser Receptor'
+                    }
+                    name="receptor"
+                    disabled={alreadyReceptor}
+                    data={{ label: '', value: true }}
+                  />
+                </div>
               </div>
               <Button
                 className="w-full mt-4 shadow-indigo-500 disabled:shadow-none disabled:bg-indigo-200"

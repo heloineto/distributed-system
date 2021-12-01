@@ -1,22 +1,10 @@
-import {
-  CheckCircleIcon,
-  MailIcon,
-  PhoneIcon,
-  XCircleIcon,
-} from '@heroicons/react/solid';
+import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 import { Button } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import pendingUserSchema from './utils/pendingUserSchema';
 
 interface Props {}
-
-interface PendingUser {
-  name: string;
-  city: string;
-  state: string;
-  username: string;
-}
 
 const PendingList = (props: Props) => {
   const [pendingUsers, setPendingUsers] = useState<PendingUser[]>([]);

@@ -11,6 +11,7 @@ const protocols: { [key: number]: string } = {
   610: 'update-pending',
   400: 'get-receptor-list',
   510: 'donate',
+  900: 'remove',
 };
 
 const createServer = (
@@ -93,6 +94,11 @@ const createServer = (
         case 510:
           const { default: donate } = await import(`./actions/donate`);
           response = await donate(request.message);
+          break;
+
+        case 900:
+          const { default: remove } = await import(`./actions/remove`);
+          response = await remove(request.message);
           break;
         default:
           break;

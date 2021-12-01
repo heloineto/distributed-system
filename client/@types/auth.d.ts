@@ -5,4 +5,12 @@ interface User {
   state?: string;
   city?: string;
   usertype?: number;
+  receptor?: number;
+}
+
+interface PendingUser {
+  name: string;
+  city: string;
+  state: string;
+  username: string;
 }

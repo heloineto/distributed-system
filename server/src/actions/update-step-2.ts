@@ -48,8 +48,7 @@ const updateStep2 = async (message: TCPMessage, globalUsername = 'user') => {
   try {
     const { password, name, state, city, receptor } = message;
 
-    //! delete old user
-
+    await auth.currentUser?.delete();
     await createUserWithEmailAndPassword(
       auth,
       `${globalUsername}@k.ey`,
