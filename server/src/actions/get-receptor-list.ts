@@ -33,8 +33,8 @@ const getReceptorList = async (message: TCPMessage) => {
     const usersSnapshot = await getDocs(usersQuery);
 
     const users = usersSnapshot.docs.map((userDoc) => {
-      const { username, name, city, state, password } = userDoc.data();
-      return { username, name, city, state, password };
+      const { username, name, city, state } = userDoc.data();
+      return { username, name, city, state };
     });
 
     return {
@@ -53,6 +53,8 @@ const getReceptorList = async (message: TCPMessage) => {
     //     required: ['result'],
     //   };
     // }
+
+    console.log('ERROR: ', error);
 
     return;
   }

@@ -134,6 +134,6 @@ ipcMain.on(
 );
 
 ipcMain.on('tcp-disconnect', (event: IpcMainEvent) => {
-  socket.end();
+  socket.destroy();
   console.log(`DESCONECTADO DO SOCKET`);
 });
