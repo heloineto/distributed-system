@@ -4,7 +4,7 @@
   "productName": "Portal de Doações",
   "scripts": {
     "clean": "rimraf dist main out .next",
-    "dev": "npm run build-electron && electron .",
+    "dev": "(if exist .next rd /s /q .next 2>nul) && npm run build-electron && electron .",
     "build-renderer": "next build renderer && next export renderer",
     "build-electron": "tsc -p electron",
     "build": "npm run build-renderer && npm run build-electron",
