@@ -82,10 +82,10 @@ ipcMain.on(
       ignoreFirst: boolean;
     }
   ) => {
-    if (socket) {
-      socket.end();
-      console.log(`DESCONECTADO DO SOCKET`);
-    }
+    // if (socket) {
+    //   socket.end();
+    //   console.log(`DESCONECTADO DO SOCKET`);
+    // }
 
     gIgnoreFirst = ignoreFirst;
 
