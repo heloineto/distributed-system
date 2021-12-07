@@ -9,6 +9,7 @@ import { Button } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import pendingUserSchema from './utils/pendingUserSchema';
+import * as yup from 'yup';
 
 interface Props {}
 
@@ -49,15 +50,19 @@ const PendingList = (props: Props) => {
           return;
         }
 
-        try {
-          list.forEach((each: any) => pendingUserSchema.validate(each));
-          setPendingUsers(list);
-        } catch (error) {
-          enqueueSnackbar(
-            'Um ou mais usuarios na lista retornada do servidor estão incorretos',
-            { variant: 'error' }
-          );
-        }
+        list.forEach((each: any) => {
+          try {
+            pendingUserSchema.validate(each);
+          } catch (error) {
+            if (error instanceof yup.ValidationError) {
+              enqueueSnackbar(
+                'Um ou mais usuarios na lista retornada do servidor estão incorretos',
+                { variant: 'error' }
+              );
+            }
+          }
+        });
+        setPendingUsers(list);
       }
     };
 
@@ -66,6 +71,7 @@ const PendingList = (props: Props) => {
     return () => {
       global.ipcRenderer.removeListener('tcp-recieve', listener);
     };
+    //
   }, []);
 
   return (
