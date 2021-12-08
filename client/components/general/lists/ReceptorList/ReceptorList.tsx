@@ -80,15 +80,17 @@ const ReceptorList = (props: Props) => {
           return;
         }
 
-        try {
-          list.forEach((each: any) => receptorsSchema.validate(each));
-          setReceptors(list);
-        } catch (error) {
-          enqueueSnackbar(
-            'Um ou mais usuarios na lista retornada do servidor estão incorretos',
-            { variant: 'error' }
-          );
-        }
+        list.forEach((each: any) => {
+          try {
+            receptorsSchema.validate(each);
+          } catch (error) {
+            enqueueSnackbar(
+              'Um ou mais usuarios na lista retornada do servidor estão incorretos',
+              { variant: 'error' }
+            );
+          }
+        });
+        setReceptors(list);
       }
     };
 

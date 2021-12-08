@@ -14,3 +14,9 @@ interface PendingUser {
   state: string;
   username: string;
 }
+
+interface Donation {
+  donor: string;
+  receptor: string;
+  value: number;
+}

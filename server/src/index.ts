@@ -12,6 +12,7 @@ const protocols: { [key: number]: string } = {
   400: 'get-receptor-list',
   510: 'donate',
   900: 'remove',
+  800: 'get-donations-list',
 };
 
 const createServer = (
@@ -101,7 +102,7 @@ const createServer = (
           break;
         case 800:
           const { default: getDonationsList } = await import(
-            `./actions/getDonationsList`
+            `./actions/get-donations-list`
           );
           response = await getDonationsList(request.message);
           break;
