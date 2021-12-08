@@ -1,4 +1,9 @@
-import { CashIcon, ChevronRightIcon, UserIcon } from '@heroicons/react/solid';
+import {
+  CashIcon,
+  ChevronRightIcon,
+  LibraryIcon,
+  UserIcon,
+} from '@heroicons/react/solid';
 import { UserContext } from '@lib/context';
 import { useSnackbar } from 'notistack';
 import { useContext, useEffect, useState } from 'react';
@@ -61,27 +66,28 @@ const DonationsList = (props: Props) => {
           <li key={idx}>
             <div className="px-6 py-4 flex items-center hover:bg-gray-50 justify-between w-full">
               <div>
-                <p className="text-sm font-medium text-indigo-600 truncate">
+                <p className="font-bold text-indigo-600 truncate">
                   {user?.name ?? user?.username}
                 </p>
-                <p className="mt-2 flex items-center text-sm text-gray-500">
+                <p className="mt-2 flex items-center text-gray-500">
                   <UserIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
                   <span className="truncate">{donor}</span>
                 </p>
               </div>
               <ChevronRightIcon className="h-7 w-7 text-gray-400" aria-hidden="true" />
-              <p className="mt-2 flex items-center text-sm text-gray-500">
+              <p className="mt-2 flex items-center font-bold text-green-600">
                 <CashIcon
-                  className="flex-shrink-0 mr-1.5 h-6 w-6 text-green-400"
+                  className="flex-shrink-0 mr-1.5 h-8 w-8 text-green-400"
                   aria-hidden="true"
                 />
-                R$ {value}
+                R$ {new Intl.NumberFormat().format(value)}
               </p>
               <ChevronRightIcon className="h-7 w-7 text-gray-400" aria-hidden="true" />
-              <div className="hidden md:block">
-                <div>
-                  <p className="text-sm text-gray-900">{receptor}</p>
-                </div>
+              <div>
+                <p className="mt-2 flex items-center text-gray-500">
+                  <LibraryIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
+                  <span className="truncate">{receptor}</span>
+                </p>
               </div>
             </div>
           </li>

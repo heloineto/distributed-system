@@ -113,6 +113,26 @@ const useTCPListener = () => {
       handle: (message: any) =>
         enqueueSnackbar(message?.reason ?? defErrorMsg, { variant: 'error' }),
     },
+    801: {
+      name: 'get-donations-list-success',
+      handle: () =>
+        enqueueSnackbar('Lista de doações recebida!', {
+          variant: 'success',
+        }),
+    },
+    501: {
+      name: 'chat-success',
+      handle: () =>
+        enqueueSnackbar('Mensagem no chat enviada!', {
+          variant: 'success',
+        }),
+    },
+    502: {
+      name: 'chat-error',
+      variant: 'error',
+      handle: (message: any) =>
+        enqueueSnackbar(message?.reason ?? defErrorMsg, { variant: 'error' }),
+    },
   };
 
   useEffect(() => {
