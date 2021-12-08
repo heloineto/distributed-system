@@ -1,4 +1,4 @@
-import { LibraryIcon, PaperAirplaneIcon, UserIcon } from '@heroicons/react/solid';
+import { PaperAirplaneIcon } from '@heroicons/react/solid';
 import { UserContext } from '@lib/context';
 import { IconButton } from '@material-ui/core';
 import { TextField } from 'mui-rff';

@@ -13,6 +13,7 @@ const protocols: { [key: number]: string } = {
   510: 'donate',
   900: 'remove',
   800: 'get-donations-list',
+  500: 'send-chat-message',
 };
 
 const createServer = (
@@ -105,6 +106,10 @@ const createServer = (
             `./actions/get-donations-list`
           );
           response = await getDonationsList(request.message);
+          break;
+        case 500:
+          const { default: sedChatMessage } = await import(`./actions/send-chat-message`);
+          response = await sedChatMessage(request.message);
           break;
         default:
           break;
