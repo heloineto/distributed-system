@@ -99,6 +99,12 @@ const createServer = (
           const { default: remove } = await import(`./actions/remove`);
           response = await remove(request.message);
           break;
+        case 800:
+          const { default: getDonationsList } = await import(
+            `./actions/getDonationsList`
+          );
+          response = await getDonationsList(request.message);
+          break;
         default:
           break;
       }

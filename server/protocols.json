@@ -1,0 +1,32 @@
+{
+  "protocol": 800,
+  "message": {
+    "username": "nome do usuario"
+  },
+  "required": [
+    "username"
+  ]
+}
+
+{
+  "protocol": 801,
+  "message": {
+    "result": true,
+    "list": [
+      {
+        "donor": "username do donor",
+        "receptor": "username do receptor",
+        "value": "numero inteiro (int)",
+      },
+      {
+        "donor": "username do donor",
+        "receptor": "username do receptor",
+        "value": "numero inteiro (int)",
+      },
+    ]
+  },
+  "required": [
+    "result",
+    "list"
+  ]
+}

@@ -1,5 +1,5 @@
 import MainShell from '@components/app-shells/MainShell';
-import ReceptorList from '@components/general/home/ReceptorList';
+import ReceptorList from '@components/general/lists/ReceptorList';
 
 const Home: NextPage = () => {
   return (

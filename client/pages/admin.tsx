@@ -1,5 +1,5 @@
 import MainShell from '@components/app-shells/MainShell';
-import PendingList from '@components/general/admin/PendingList';
+import PendingList from '@components/general/lists/PendingList';
 
 const Admin: NextPage = () => {
   return (
