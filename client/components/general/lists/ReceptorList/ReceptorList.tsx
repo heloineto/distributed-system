@@ -12,7 +12,7 @@ import {
   ListItemText,
   MenuItem,
 } from '@material-ui/core';
-import { Autocomplete, Select, TextField } from 'mui-rff';
+import { Autocomplete, Select, Switches, TextField } from 'mui-rff';
 import { useSnackbar } from 'notistack';
 import { useContext, useEffect, useState } from 'react';
 import { Form } from 'react-final-form';
@@ -48,15 +48,16 @@ const ReceptorList = (props: Props) => {
     });
   };
 
-  const donate = ({ value }: any, donor: string, receptor: string) => {
+  const donate = ({ value, anonymous }: any, donor: string, receptor: string) => {
     global.ipcRenderer.send('tcp-send', {
       protocol: 510,
       message: {
         donor,
         receptor,
         value,
+        anonymous,
       },
-      required: ['donor', 'receptor', 'value'],
+      required: ['donor', 'receptor', 'value', 'anonymous'],
     });
   };
 
@@ -229,12 +230,22 @@ const ReceptorList = (props: Props) => {
             onSubmit={(values) => {
               if (user?.username) donate(values, user.username, username);
             }}
+            initialValues={{
+              anonymous: false,
+            }}
           >
             {({ handleSubmit, submitting, form, values }) => (
               <form
                 onSubmit={handleSubmit}
                 className="mt-5 flex lg:mt-0 lg:ml-4 w-96 gap-x-5"
               >
+                <div>
+                  <Switches
+                    label="Anônimo"
+                    name="anonymous"
+                    data={{ label: '', value: false }}
+                  />
+                </div>
                 <TextField className="w-full flex" name="value" label="Valor" select>
                   {[1, 10, 100, 250, 500, 750, 1000, 10000].map((value) => (
                     <MenuItem key={value} value={value}>
@@ -254,6 +265,7 @@ const ReceptorList = (props: Props) => {
                   <CashIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
                   Doar
                 </Button>
+                {/* {JSON.stringify(values)} */}
               </form>
             )}
           </Form>

@@ -20,8 +20,8 @@ const getDonationsList = async (message: TCPMessage) => {
     const donationsSnapshot = await getDocs(donationsQuery);
 
     const donations = donationsSnapshot.docs.map((donationDoc) => {
-      const { donor, receptor, value } = donationDoc.data();
-      return { donor, receptor, value };
+      const { donor, receptor, value, anonymous } = donationDoc.data();
+      return { donor, receptor, value, anonymous };
     });
 
     return {

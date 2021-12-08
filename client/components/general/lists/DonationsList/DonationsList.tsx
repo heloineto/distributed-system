@@ -1,8 +1,10 @@
 import {
   CashIcon,
   ChevronRightIcon,
+  EyeOffIcon,
   LibraryIcon,
   UserIcon,
+  UserRemoveIcon,
 } from '@heroicons/react/solid';
 import { UserContext } from '@lib/context';
 import { useSnackbar } from 'notistack';
@@ -62,33 +64,35 @@ const DonationsList = (props: Props) => {
   return (
     <div className="bg-white shadow overflow-hidden sm:rounded-md m-5">
       <ul role="list" className="divide-y divide-gray-200">
-        {donations.map(({ donor, receptor, value }, idx) => (
+        {donations.map(({ donor, receptor, value, anonymous }, idx) => (
           <li key={idx}>
             <div className="px-6 py-4 flex items-center hover:bg-gray-50 justify-between w-full">
-              <div>
-                <p className="font-bold text-indigo-600 truncate">
-                  {user?.name ?? user?.username}
-                </p>
-                <p className="mt-2 flex items-center text-gray-500">
-                  <UserIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
-                  <span className="truncate">{donor}</span>
-                </p>
-              </div>
-              <ChevronRightIcon className="h-7 w-7 text-gray-400" aria-hidden="true" />
-              <p className="mt-2 flex items-center font-bold text-green-600">
+              <p className="mt-2 flex items-center justify-center font-medium w-1/3">
+                {anonymous ? (
+                  <>
+                    <EyeOffIcon className="flex-shrink-0 mr-1.5 h-7 w-7 text-gray-600" />
+                    <span className="truncate text-gray-700 ">anonimo</span>
+                  </>
+                ) : (
+                  <>
+                    <UserIcon className="flex-shrink-0 mr-1.5 h-7 w-7 text-indigo-400" />
+                    <span className="truncate text-indigo-500">{donor}</span>
+                  </>
+                )}
+              </p>
+              <ChevronRightIcon className="h-8 w-8 text-gray-400" aria-hidden="true" />
+              <p className="mt-2 flex items-center justify-center font-bold text-green-600 w-1/3">
                 <CashIcon
                   className="flex-shrink-0 mr-1.5 h-8 w-8 text-green-400"
                   aria-hidden="true"
                 />
                 R$ {new Intl.NumberFormat().format(value)}
               </p>
-              <ChevronRightIcon className="h-7 w-7 text-gray-400" aria-hidden="true" />
-              <div>
-                <p className="mt-2 flex items-center text-gray-500">
-                  <LibraryIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
-                  <span className="truncate">{receptor}</span>
-                </p>
-              </div>
+              <ChevronRightIcon className="h-8 w-8 text-gray-400" aria-hidden="true" />
+              <p className="mt-2 flex items-center justify-center text-blue-500 font-medium w-1/3">
+                <LibraryIcon className="flex-shrink-0 mr-1.5 h-7 w-7 text-blue-400" />
+                <span className="truncate">{receptor}</span>
+              </p>
             </div>
           </li>
         ))}

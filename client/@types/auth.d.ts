@@ -19,4 +19,5 @@ interface Donation {
   donor: string;
   receptor: string;
   value: number;
+  anonymous: boolean;
 }

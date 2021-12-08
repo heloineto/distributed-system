@@ -8,20 +8,22 @@ const donateSchema = yup.object().shape({
     .string()
     .required('Forneca um usuario receptor')
     .max(50, 'O usuario receptor pode ter no maximo 50 caracteres'),
-  value: yup.number(),
+  value: yup.number().required('Forneca um valor'),
+  anonymous: yup.boolean().required('Forneca se e anonimo ou nao (bool)'),
 });
 
 const donate = async (message: TCPMessage) => {
   try {
     donateSchema.validate(message);
 
-    const { donor, receptor, value } = message;
+    const { donor, receptor, value, anonymous } = message;
 
     const usersRef = collection(firestore, 'donations');
     await addDoc(usersRef, {
       donor,
       receptor,
       value,
+      anonymous,
     });
 
     return {
