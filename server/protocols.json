@@ -30,3 +30,40 @@
     "list"
   ]
 }
+
+{
+  "protocol": 500,
+  "message": {
+    "from": "nome do usuario que envia a msg",
+    "to": "nome do usuario que recebe a msg",
+    "message": "mensagem",
+  },
+  "required": [
+    "from",
+    "to",
+    "message"
+  ]
+}
+
+
+{
+  "protocol": 501,
+  "message": {
+    "result": true,
+  },
+  "required": [
+    "result",
+  ]
+}
+
+{
+  "protocol": 502,
+  "message": {
+    "result": true,
+    "reason": "Mensagem do motivo"
+  },
+  "required": [
+    "result",
+    "reason"
+  ]
+}
