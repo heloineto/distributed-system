@@ -108,8 +108,10 @@ const createServer = (
           response = await getDonationsList(request.message);
           break;
         case 500:
-          const { default: sedChatMessage } = await import(`./actions/send-chat-message`);
-          response = await sedChatMessage(request.message);
+          const { default: sendChatMessage } = await import(
+            `./actions/send-chat-message`
+          );
+          response = await sendChatMessage(request.message);
           break;
         default:
           break;
