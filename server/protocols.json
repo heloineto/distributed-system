@@ -34,13 +34,25 @@
 {
   "protocol": 500,
   "message": {
-    "from": "nome do usuario que envia a msg",
     "to": "nome do usuario que recebe a msg",
     "message": "mensagem",
   },
   "required": [
-    "from",
     "to",
+    "message"
+  ]
+}
+
+// ENVIAR MENSAGEM PARA O CLIENTE
+// S -> C
+{
+  "protocol": 503,
+  "message": {
+    "from": "nome do usuario que envia a msg",
+    "message": "mensagem",
+  },
+  "required": [
+    "from",
     "message"
   ]
 }
@@ -57,6 +69,38 @@
 
 {
   "protocol": 502,
+  "message": {
+    "result": true,
+    "reason": "Mensagem do motivo"
+  },
+  "required": [
+    "result",
+    "reason"
+  ]
+}
+// PEGAR LISTA DE RECEPTORES CONECTADOS
+{
+  "protocol": 520,
+}
+
+{
+  "protocol": 521,
+  "message": {
+    "result": true,
+    "list": [
+      "username",
+      "username",
+      "username",
+    ]
+  },
+  "required": [
+    "result",
+    "list"
+  ]
+}
+
+{
+  "protocol": 522,
   "message": {
     "result": true,
     "reason": "Mensagem do motivo"

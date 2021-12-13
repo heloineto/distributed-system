@@ -16,13 +16,8 @@ const protocols: { [key: number]: string } = {
   500: 'send-chat-message',
 };
 
-const createServer = (
-  port: number,
-  encoding: BufferEncoding = 'utf8',
-  ignoreFirst: boolean = false
-) => {
+const createServer = (port: number) => {
   const server = net.createServer((socket) => {
-    socket.setEncoding(encoding);
     console.log(`(${port}) Conexão estabelecida!`);
     let globalUsername = 'user';
 
@@ -30,14 +25,14 @@ const createServer = (
       let request: TCPRequest;
 
       try {
-        console.log(`(${port}) RECEIVED (RAW):`, data.toString());
         request = JSON.parse(data.toString().substring(data.toString().indexOf('{')));
       } catch (error) {
+        console.log(`(${port}) RECEIVED (RAW):`, data.toString());
         console.error(`(${port}) ERRO: a solicitação não e um JSON valido.`);
         return;
       }
 
-      console.info(`(${port}) RECEIVED:`, request);
+      console.log(`(${port}) RECEIVED:`, request);
       const { protocol } = request;
 
       if (!protocol) {
@@ -118,15 +113,8 @@ const createServer = (
       }
 
       if (response) {
-        if (ignoreFirst) {
-          const jsonStr = JSON.stringify(response);
-          const compatResponse = String.fromCharCode(jsonStr.length) + jsonStr;
-          socket.write(compatResponse + '\n');
-          console.info(`(${port}) SENT:`, compatResponse);
-        } else {
-          socket.write(JSON.stringify(response) + '\n');
-          console.info(`(${port}) SENT:`, response);
-        }
+        socket.write(JSON.stringify(response) + '\n');
+        console.info(`(${port}) SENT:`, JSON.stringify(response, null, '\t'));
       }
     });
 
@@ -138,30 +126,4 @@ const createServer = (
   server.listen(port, () => console.info(`Servidor ouvindo na porta ${port}`));
 };
 
-const main = async () => {
-  console.log('Selecione uma codificação:');
-  const { value: encoding }: { value: BufferEncoding } = await cliSelect({
-    values: [
-      'utf8',
-      'ascii',
-      'base64',
-      'base64url',
-      'utf16le',
-      'ucs2',
-      'hex',
-      'binary',
-      'latin1',
-    ],
-  });
-  console.log(`Selecionado: ${encoding}`);
-
-  console.log('Tamanho no ínicio do buffer (p/ compatibilidade):');
-  const { value }: { value: string } = await cliSelect({
-    values: ['Não', 'Sim'],
-  });
-  console.log(`Selecionado: ${value}`);
-
-  createServer(20026, encoding, value == 'Sim');
-};
-
-main();
+createServer(20026);
