@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "firebase": "^9.5.0",
+    "not-a-log": "^1.0.1",
     "yup": "^0.32.11"
   }
 }

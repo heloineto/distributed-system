@@ -1,5 +1,21 @@
 import net from 'net';
 import EventEmitter from 'events';
+import fs from 'fs';
+import { Console } from 'node:console';
+import { Transform } from 'node:stream';
+
+const ts = new Transform({
+  transform(chunk, enc, cb) {
+    cb(null, chunk);
+  },
+});
+
+const logger = new Console({ stdout: ts });
+
+const getTable = (data: any) => {
+  logger.table(data);
+  return (ts.read() || '').toString();
+};
 
 const eventEmitter = new EventEmitter();
 
@@ -19,8 +35,17 @@ const protocols: { [key: number]: string } = {
   520: 'get-connected-receptors',
 };
 
-const updateUsersTable = (users: { [k: string]: User }) => {
+const updateUsersTable = async (users: { [k: string]: User }) => {
   console.table(users);
+
+  const tableStr = getTable(users);
+
+  fs.writeFile('./user-table.txt', tableStr, (err) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+  });
 };
 
 const createServer = (port: number) => {
