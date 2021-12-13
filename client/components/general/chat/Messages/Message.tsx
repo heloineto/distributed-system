@@ -66,7 +66,7 @@ const Message = ({ receptor }: Props) => {
 
   return (
     <div className="m-5 rounded-md h-full flex flex-col bg-white p-2.5">
-      <div className="flex-1 flex gap-y-2 flex-col">
+      <div className="flex-1 flex gap-y-2 flex-col h-[100%] overflow-y-auto">
         {messages.map(({ from, message, direction }) =>
           direction === 'left' ? (
             <ChatBubbleLeft username={from}>{message}</ChatBubbleLeft>
