@@ -1,5 +1,3 @@
-import { addDoc, collection, doc, setDoc, updateDoc } from 'firebase/firestore';
-import { firestore } from '../lib/firebase';
 import * as yup from 'yup';
 
 const sendChatMessageSchema = yup.object().shape({
@@ -15,29 +13,30 @@ const sendChatMessageSchema = yup.object().shape({
 });
 
 const sendChatMessage = async (message: TCPMessage) => {
+  let response;
+  let validMessage;
+
   try {
     sendChatMessageSchema.validate(message);
     const { to, message: chatMessage } = message;
 
-    // const chatsRef = collection(firestore, `chats`);
-    // await addDoc(chatsRef, { to, from, message: chatMessage });
+    validMessage = { to, chatMessage };
 
-    return {
+    response = {
       protocol: 501,
       message: { result: true },
       required: ['result'],
     };
   } catch (error) {
     if (error instanceof yup.ValidationError) {
-      return {
+      response = {
         protocol: 502,
         message: { result: false, reason: error.message },
         required: ['result', 'reason'],
       };
     }
-    console.log(error);
 
-    return {
+    response = {
       protocol: 502,
       message: {
         result: false,
@@ -46,6 +45,8 @@ const sendChatMessage = async (message: TCPMessage) => {
       required: ['result', 'reason'],
     };
   }
+
+  return [response, validMessage] as [typeof response, typeof validMessage];
 };
 
 export default sendChatMessage;

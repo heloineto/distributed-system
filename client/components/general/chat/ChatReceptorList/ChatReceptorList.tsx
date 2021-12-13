@@ -1,14 +1,8 @@
-import {
-  ChatAlt2Icon,
-  LocationMarkerIcon,
-  OfficeBuildingIcon,
-  UserIcon,
-} from '@heroicons/react/solid';
+import { ChatAlt2Icon } from '@heroicons/react/solid';
 import { UserContext } from '@lib/context';
 import { Button } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import { useContext, useEffect, useState } from 'react';
-import { useBrazilianStates, useBrazilianCities } from '@lib/hooks';
 import Link from 'next/link';
 
 interface Props {}

@@ -21,3 +21,9 @@ interface Donation {
   value: number;
   anonymous: boolean;
 }
+
+interface Message {
+  from: string;
+  message: string;
+  direction?: 'left' | 'right';
+}

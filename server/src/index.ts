@@ -1,4 +1,7 @@
 import net from 'net';
+import EventEmitter from 'events';
+
+const eventEmitter = new EventEmitter();
 
 const protocols: { [key: number]: string } = {
   100: 'login',
@@ -32,6 +35,22 @@ const createServer = (port: number) => {
     };
 
     let globalUser: User = defaultUser;
+
+    eventEmitter.on('chat', async (validMessage) => {
+      if (validMessage?.to !== globalUser.username) return;
+
+      const chatMsg = {
+        protocol: 503,
+        message: {
+          from: validMessage?.from ?? '',
+          message: validMessage?.chatMessage ?? '',
+        },
+        required: ['from', 'message'],
+      };
+
+      socket.write(JSON.stringify(chatMsg) + '\n');
+      console.info(`(${port}) SENT:`, JSON.stringify(chatMsg, null, '\t'));
+    });
 
     socket.on('data', async (data) => {
       let request: TCPRequest;
@@ -131,7 +150,10 @@ const createServer = (port: number) => {
           const { default: sendChatMessage } = await import(
             `./actions/send-chat-message`
           );
-          response = await sendChatMessage(request.message);
+          const [response_, validMessage] = await sendChatMessage(request.message);
+          response = response_;
+
+          eventEmitter.emit('chat', { ...validMessage, from: globalUser?.username });
           break;
         case 520:
           const { default: getConnectedReceptors } = await import(

@@ -133,6 +133,26 @@ const useTCPListener = () => {
       handle: (message: any) =>
         enqueueSnackbar(message?.reason ?? defErrorMsg, { variant: 'error' }),
     },
+    503: {
+      name: 'chat-receptors-success',
+      handle: () =>
+        enqueueSnackbar('Mensagem recebida!', {
+          variant: 'info',
+        }),
+    },
+    521: {
+      name: 'chat-receptors-success',
+      handle: () =>
+        enqueueSnackbar('Receptores conectados recebidos!', {
+          variant: 'success',
+        }),
+    },
+    522: {
+      name: 'chat-receptors-error',
+      variant: 'error',
+      handle: (message: any) =>
+        enqueueSnackbar(message?.reason ?? defErrorMsg, { variant: 'error' }),
+    },
   };
 
   useEffect(() => {
