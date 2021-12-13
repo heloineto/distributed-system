@@ -23,7 +23,7 @@ const Message = ({ receptor }: Props) => {
       const { protocol, message } = response;
 
       if (protocol == 503) {
-        const { from, chatMessage } = message;
+        const { from, message: chatMessage } = message;
 
         if (!message || !from) {
           enqueueSnackbar('O servidor não enviou uma mensagem ou o correspondente', {

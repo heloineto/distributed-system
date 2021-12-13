@@ -15,7 +15,7 @@ const ChatBubbleLeft = ({ children, username }: Props) => {
           <LibraryIcon className="flex-shrink-0 mr-1.5 h-4 w-4" />
           {username}
         </h6>
-        <p className="text-blue-900 ">{children}</p>
+        <p className="text-blue-900">{children}</p>
       </div>
     </div>
   );

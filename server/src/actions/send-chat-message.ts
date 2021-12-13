@@ -20,7 +20,7 @@ const sendChatMessage = async (message: TCPMessage) => {
     sendChatMessageSchema.validate(message);
     const { to, message: chatMessage } = message;
 
-    validMessage = { to, chatMessage };
+    validMessage = { to, message: chatMessage };
 
     response = {
       protocol: 501,

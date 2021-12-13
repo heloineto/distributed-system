@@ -36,21 +36,31 @@ const createServer = (port: number) => {
 
     let globalUser: User = defaultUser;
 
-    eventEmitter.on('chat', async (validMessage) => {
-      if (validMessage?.to !== globalUser.username) return;
+    const handleChat = ({
+      to,
+      from,
+      message,
+    }: {
+      to: string;
+      from: string;
+      message: string;
+    }) => {
+      if (to !== globalUser.username) return;
 
       const chatMsg = {
         protocol: 503,
         message: {
-          from: validMessage?.from ?? '',
-          message: validMessage?.chatMessage ?? '',
+          from: from ?? '',
+          message: message ?? '',
         },
         required: ['from', 'message'],
       };
 
       socket.write(JSON.stringify(chatMsg) + '\n');
       console.info(`(${port}) SENT:`, JSON.stringify(chatMsg, null, '\t'));
-    });
+    };
+
+    eventEmitter.addListener('chat', handleChat);
 
     socket.on('data', async (data) => {
       let request: TCPRequest;
@@ -153,7 +163,11 @@ const createServer = (port: number) => {
           const [response_, validMessage] = await sendChatMessage(request.message);
           response = response_;
 
-          eventEmitter.emit('chat', { ...validMessage, from: globalUser?.username });
+          console.log(validMessage);
+
+          if (validMessage) {
+            eventEmitter.emit('chat', { ...validMessage, from: globalUser?.username });
+          }
           break;
         case 520:
           const { default: getConnectedReceptors } = await import(
@@ -182,6 +196,8 @@ const createServer = (port: number) => {
 
         updateUsersTable(users);
       }
+
+      eventEmitter.removeListener('chat', handleChat);
     });
 
     socket.on('error', (error) => {
@@ -193,6 +209,8 @@ const createServer = (port: number) => {
 
         updateUsersTable(users);
       }
+
+      eventEmitter.removeListener('chat', handleChat);
     });
   });
 
