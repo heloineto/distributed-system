@@ -23,6 +23,7 @@ const DonationsList = (props: Props) => {
       protocol: 800,
       message: {
         username: user?.username ?? '',
+        usertype: user?.usertype ?? 1,
       },
       required: ['username'],
     });
