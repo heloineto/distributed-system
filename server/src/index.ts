@@ -1,5 +1,4 @@
 import net from 'net';
-const cliSelect = require('cli-select');
 
 const protocols: { [key: number]: string } = {
   100: 'login',
@@ -26,7 +25,13 @@ const createServer = (port: number) => {
 
   const server = net.createServer((socket) => {
     console.log(`(${port}) Conexão estabelecida!`);
-    let globalUser: User | null = null;
+
+    const defaultUser = {
+      adress: socket.remoteAddress,
+      port,
+    };
+
+    let globalUser: User = defaultUser;
 
     socket.on('data', async (data) => {
       let request: TCPRequest;
@@ -61,9 +66,9 @@ const createServer = (port: number) => {
           const { default: login } = await import(`./actions/login`);
           const [loginResponse, user] = await login(request.message);
 
-          if (user) {
-            users[user?.username] = user;
-            globalUser = user;
+          if (user?.username) {
+            globalUser = { ...globalUser, ...user };
+            users[user?.username] = globalUser;
 
             updateUsersTable(users);
           }
@@ -74,9 +79,9 @@ const createServer = (port: number) => {
           const { default: logout } = await import(`./actions/logout`);
           response = await logout();
 
-          if (globalUser) {
+          if (globalUser?.username) {
             delete users[globalUser.username];
-            globalUser = null;
+            globalUser = defaultUser;
 
             updateUsersTable(users);
           }
@@ -149,9 +154,9 @@ const createServer = (port: number) => {
 
     socket.on('close', () => {
       console.info(`(${port}) SOCKET CLOSE`);
-      if (globalUser) {
+      if (globalUser?.username) {
         delete users[globalUser.username];
-        globalUser = null;
+        globalUser = defaultUser;
 
         updateUsersTable(users);
       }
@@ -160,9 +165,9 @@ const createServer = (port: number) => {
     socket.on('error', (error) => {
       console.error(`(${port}) SOCKET ERROR:`, error);
 
-      if (globalUser) {
+      if (globalUser?.username) {
         delete users[globalUser.username];
-        globalUser = null;
+        globalUser = defaultUser;
 
         updateUsersTable(users);
       }
