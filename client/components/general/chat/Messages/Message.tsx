@@ -46,11 +46,11 @@ const Message = ({ receptor }: Props) => {
     };
   }, []);
 
-  const sendMessage = ({ message }: any, to: string) => {
+  const sendMessage = ({ message, to }: any, to2: string) => {
     global.ipcRenderer.send('tcp-send', {
       protocol: 500,
       message: {
-        to,
+        to: to ?? to2,
         message,
       },
       required: ['to', 'message'],
@@ -80,6 +80,7 @@ const Message = ({ receptor }: Props) => {
           {({ handleSubmit, submitting, form, values }) => (
             <form onSubmit={handleSubmit} className="flex mt-2.5 gap-x-5 w-full pr-20">
               <TextField className="w-full" name="message" placeholder="Mensagem" />
+              <TextField className="w-1/3" name="to" placeholder="Para" />
               <IconButton
                 disabled={!values.message}
                 type="submit"

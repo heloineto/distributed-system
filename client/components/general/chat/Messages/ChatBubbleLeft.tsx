@@ -1,4 +1,4 @@
-import { LibraryIcon } from '@heroicons/react/solid';
+import { UserIcon } from '@heroicons/react/solid';
 
 interface Props {
   children?: ReactNode;
@@ -12,7 +12,7 @@ const ChatBubbleLeft = ({ children, username }: Props) => {
       </div>
       <div className="bg-blue-200 rounded-md rounded-tl-none p-2 max-w-xl">
         <h6 className="text-blue-800 flex justify-start items-center text-sm font-medium">
-          <LibraryIcon className="flex-shrink-0 mr-1.5 h-4 w-4" />
+          <UserIcon className="flex-shrink-0 mr-1.5 h-4 w-4" />
           {username}
         </h6>
         <p className="text-blue-900">{children}</p>
