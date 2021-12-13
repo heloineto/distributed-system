@@ -16,7 +16,7 @@ const updatePending = async (message: TCPMessage) => {
     const { username, receptor } = message;
 
     const userRef = doc(firestore, `users/${username}`);
-    await updateDoc(userRef, { receptor });
+    await updateDoc(userRef, { receptor, usertype: receptor === 1 ? 2 : 1 });
 
     return {
       protocol: 611,
