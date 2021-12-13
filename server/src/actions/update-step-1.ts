@@ -42,40 +42,33 @@ const updateStep1 = async (message: TCPMessage) => {
     const { name, city, state, receptor, password } = userDoc.data() as any;
 
     return {
-      response: {
-        protocol: 711,
-        message: {
-          result: true,
-          name,
-          city,
-          state,
-          password,
-          receptor: receptor ?? 99,
-        },
-        required: ['result', 'name', 'city', 'state', 'password', 'receptor'],
+      protocol: 711,
+      message: {
+        result: true,
+        name,
+        city,
+        state,
+        password,
+        receptor: receptor ?? 99,
       },
-      globalUsername: username,
+      required: ['result', 'name', 'city', 'state', 'password', 'receptor'],
     };
   } catch (error) {
     if (isFirebaseAuthError(error)) {
       return {
-        response: {
-          protocol: 712,
-          message: {
-            result: false,
-            reason: authErrors?.[error?.code]?.message ?? error.message ?? error,
-          },
-          required: ['result', 'reason'],
+        protocol: 712,
+        message: {
+          result: false,
+          reason: authErrors?.[error?.code]?.message ?? error.message ?? error,
         },
+        required: ['result', 'reason'],
       };
     }
 
     return {
-      response: {
-        protocol: 712,
-        message: { result: false, reason: 'Erro desconhecido' },
-        required: ['result', 'reason'],
-      },
+      protocol: 712,
+      message: { result: false, reason: 'Erro desconhecido' },
+      required: ['result', 'reason'],
     };
   }
 };

@@ -17,6 +17,8 @@ const protocols: { [key: number]: string } = {
 };
 
 const createServer = (port: number) => {
+  const users: { [k: string]: User } = {};
+
   const server = net.createServer((socket) => {
     console.log(`(${port}) Conexão estabelecida!`);
     let globalUsername = 'user';
@@ -52,7 +54,13 @@ const createServer = (port: number) => {
       switch (protocol) {
         case 100:
           const { default: login } = await import(`./actions/login`);
-          response = await login(request.message);
+          const [response_, user] = await login(request.message);
+
+          if (user) {
+            users[user?.username] = user;
+          }
+
+          response = response_;
           break;
         case 199:
           const { default: logout } = await import(`./actions/logout`);
@@ -64,11 +72,9 @@ const createServer = (port: number) => {
           break;
         case 710:
           const { default: updateStep1 } = await import(`./actions/update-step-1`);
-          const { response: _response, globalUsername: _globalUsername } =
-            await updateStep1(request.message);
+          response = await updateStep1(request.message);
 
-          response = _response;
-          globalUsername = _globalUsername ?? 'user';
+          globalUsername = 'user';
           break;
         case 720:
           const { default: updateStep2 } = await import(`./actions/update-step-2`);

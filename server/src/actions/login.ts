@@ -16,27 +16,14 @@ const loginSchema = yup.object().shape({
 });
 
 const login = async (message: TCPMessage) => {
+  let response;
+  let user: User | undefined;
+
   try {
     await loginSchema.validate(message);
-  } catch (error) {
-    if (error instanceof yup.ValidationError) {
-      return {
-        protocol: 102,
-        message: { result: false, reason: error.message },
-        required: ['result', 'reason'],
-      };
-    }
 
-    return {
-      protocol: 102,
-      message: { result: false, reason: 'Erro desconhecido' },
-      required: ['result', 'reason'],
-    };
-  }
+    const { username, password } = message;
 
-  const { username, password } = message;
-
-  try {
     await signInWithEmailAndPassword(
       auth,
       `${username}@k.ey`,
@@ -48,14 +35,25 @@ const login = async (message: TCPMessage) => {
 
     const { usertype } = userDoc.data() as any;
 
-    return {
+    user = {
+      username,
+      usertype,
+    };
+
+    response = {
       protocol: 101,
       message: { result: true, usertype },
       required: ['result', 'usertype'],
     };
   } catch (error) {
-    if (isFirebaseAuthError(error)) {
-      return {
+    if (error instanceof yup.ValidationError) {
+      response = {
+        protocol: 102,
+        message: { result: false, reason: error.message },
+        required: ['result', 'reason'],
+      };
+    } else if (isFirebaseAuthError(error)) {
+      response = {
         protocol: 102,
         message: {
           result: false,
@@ -63,17 +61,19 @@ const login = async (message: TCPMessage) => {
         },
         required: ['result', 'reason'],
       };
+    } else {
+      response = {
+        protocol: 102,
+        message: {
+          result: false,
+          reason: 'Erro desconhecido',
+          required: ['result', 'reason'],
+        },
+      };
     }
-
-    return {
-      protocol: 102,
-      message: {
-        result: false,
-        reason: 'Erro desconhecido',
-        required: ['result', 'reason'],
-      },
-    };
   }
+
+  return [response, user] as [typeof response, typeof user];
 };
 
 export default login;

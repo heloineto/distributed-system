@@ -1,11 +1,13 @@
 import { Button, Dialog, useMediaQuery, useTheme } from '@material-ui/core';
 import { Autocomplete, Switches, TextField } from 'mui-rff';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Form } from 'react-final-form';
 import { useSnackbar } from 'notistack';
 import { useTCPListener } from '@lib/hooks';
+import { UserContext } from '@lib/context';
 
 const Connect = () => {
+  const { setUser } = useContext(UserContext);
   const { breakpoints } = useTheme();
   const mobile = useMediaQuery(breakpoints.down('md'));
   const [open, setOpen] = useState(true);
@@ -23,10 +25,12 @@ const Connect = () => {
         case 'end':
           enqueueSnackbar('Socket desconectado', { variant: 'info' });
           setOpen(true);
+          setUser?.(null);
           break;
         case 'error':
           enqueueSnackbar('Erro no socket', { variant: 'error' });
           setOpen(true);
+          setUser?.(null);
           break;
         default:
           break;

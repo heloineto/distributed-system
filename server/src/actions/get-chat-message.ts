@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, query, setDoc, updateDoc, where } from 'firebase/firestore';
+import { collection, query, where } from 'firebase/firestore';
 import { firestore } from '../lib/firebase';
 import * as yup from 'yup';
 
