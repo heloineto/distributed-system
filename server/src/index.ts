@@ -1,8 +1,8 @@
 import net from 'net';
 import EventEmitter from 'events';
 import fs from 'fs';
-import { Console } from 'node:console';
-import { Transform } from 'node:stream';
+import { Console } from 'console';
+import { Transform } from 'stream';
 
 const ts = new Transform({
   transform(chunk, enc, cb) {
