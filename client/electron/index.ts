@@ -60,7 +60,7 @@ ipcMain.on(
         return;
       }
 
-      console.log('SENDING: ', request);
+      console.log('SENDING:', request);
       socket.write(JSON.stringify(request) + '\n');
     }
   }
@@ -82,11 +82,6 @@ ipcMain.on(
       ignoreFirst: boolean;
     }
   ) => {
-    // if (socket) {
-    //   socket.end();
-    //   console.log(`DESCONECTADO DO SOCKET`);
-    // }
-
     gIgnoreFirst = ignoreFirst;
 
     socket = net.createConnection({ host, port });
@@ -117,18 +112,16 @@ ipcMain.on(
     });
 
     socket.on('data', (data) => {
-      console.log(`RECIEVED : ${data}`);
-
-      let response;
-
       try {
-        response = JSON.parse(data.toString().substring(data.toString().indexOf('{')));
+        const response = JSON.parse(
+          data.toString().substring(data.toString().indexOf('{'))
+        );
+        console.log('RECIEVED:', response);
+        event.sender.send('tcp-recieve', response);
       } catch (error) {
+        console.log('RECIEVED (RAW):', data);
         console.error('Error: response is not a valid JSON.', error);
-        return;
       }
-
-      event.sender.send('tcp-recieve', response);
     });
   }
 );

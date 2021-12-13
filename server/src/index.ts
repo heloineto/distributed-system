@@ -14,6 +14,11 @@ const protocols: { [key: number]: string } = {
   900: 'remove',
   800: 'get-donations-list',
   500: 'send-chat-message',
+  520: 'get-connected-receptors',
+};
+
+const updateUsersTable = (users: { [k: string]: User }) => {
+  console.table(users);
 };
 
 const createServer = (port: number) => {
@@ -21,7 +26,7 @@ const createServer = (port: number) => {
 
   const server = net.createServer((socket) => {
     console.log(`(${port}) Conexão estabelecida!`);
-    let globalUsername = 'user';
+    let globalUser: User | null = null;
 
     socket.on('data', async (data) => {
       let request: TCPRequest;
@@ -54,17 +59,28 @@ const createServer = (port: number) => {
       switch (protocol) {
         case 100:
           const { default: login } = await import(`./actions/login`);
-          const [response_, user] = await login(request.message);
+          const [loginResponse, user] = await login(request.message);
 
           if (user) {
             users[user?.username] = user;
+            globalUser = user;
+
+            updateUsersTable(users);
           }
 
-          response = response_;
+          response = loginResponse;
           break;
         case 199:
           const { default: logout } = await import(`./actions/logout`);
           response = await logout();
+
+          if (globalUser) {
+            delete users[globalUser.username];
+            globalUser = null;
+
+            updateUsersTable(users);
+          }
+
           break;
         case 700:
           const { default: register } = await import(`./actions/register`);
@@ -73,12 +89,10 @@ const createServer = (port: number) => {
         case 710:
           const { default: updateStep1 } = await import(`./actions/update-step-1`);
           response = await updateStep1(request.message);
-
-          globalUsername = 'user';
           break;
         case 720:
           const { default: updateStep2 } = await import(`./actions/update-step-2`);
-          response = await updateStep2(request.message, globalUsername);
+          response = await updateStep2(request.message, globalUser?.username);
           break;
         case 600:
           const { default: getPendingList } = await import(`./actions/get-pending-list`);
@@ -114,6 +128,13 @@ const createServer = (port: number) => {
           );
           response = await sendChatMessage(request.message);
           break;
+        case 520:
+          const { default: getConnectedReceptors } = await import(
+            `./actions/get-connected-receptors`
+          );
+          response = await getConnectedReceptors(users);
+          break;
+
         default:
           break;
       }
@@ -125,8 +146,27 @@ const createServer = (port: number) => {
     });
 
     socket.on('connect', () => console.log(`(${port}) SOCKET CONNECT`));
-    socket.on('close', () => console.info(`(${port}) SOCKET CLOSE`));
-    socket.on('error', (error) => console.error(`(${port}) SOCKET ERROR:`, error));
+
+    socket.on('close', () => {
+      console.info(`(${port}) SOCKET CLOSE`);
+      if (globalUser) {
+        delete users[globalUser.username];
+        globalUser = null;
+
+        updateUsersTable(users);
+      }
+    });
+
+    socket.on('error', (error) => {
+      console.error(`(${port}) SOCKET ERROR:`, error);
+
+      if (globalUser) {
+        delete users[globalUser.username];
+        globalUser = null;
+
+        updateUsersTable(users);
+      }
+    });
   });
 
   server.listen(port, () => console.info(`Servidor ouvindo na porta ${port}`));

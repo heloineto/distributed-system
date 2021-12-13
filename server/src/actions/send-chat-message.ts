@@ -3,10 +3,10 @@ import { firestore } from '../lib/firebase';
 import * as yup from 'yup';
 
 const sendChatMessageSchema = yup.object().shape({
-  from: yup
-    .string()
-    .required('Forneça um usuario from')
-    .max(50, 'O usuario from pode ter no maximo 50 caracteres'),
+  // from: yup
+  //   .string()
+  //   .required('Forneça um usuario from')
+  //   .max(50, 'O usuario from pode ter no maximo 50 caracteres'),
   to: yup
     .string()
     .required('Forneça um usuario to')
@@ -17,10 +17,10 @@ const sendChatMessageSchema = yup.object().shape({
 const sendChatMessage = async (message: TCPMessage) => {
   try {
     sendChatMessageSchema.validate(message);
-    const { to, from, message: chatMessage } = message;
+    const { to, message: chatMessage } = message;
 
-    const chatsRef = collection(firestore, `chats`);
-    await addDoc(chatsRef, { to, from, message: chatMessage });
+    // const chatsRef = collection(firestore, `chats`);
+    // await addDoc(chatsRef, { to, from, message: chatMessage });
 
     return {
       protocol: 501,
