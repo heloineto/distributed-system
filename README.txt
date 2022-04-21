@@ -1,3 +1,7 @@
+# Doe Vida
+
+Doe Vida é um cliente e servidor TCP para um aplicativo de doações. O servidor é feito usando Node.js e o cliente é feito usando Next.js & Electron. Este é um projeto universitário para a disciplina de Sistemas Distribuídos da UTFPR
+
 Para instalar o programa:
 
 1. Instale o node (https://nodejs.org/en/).
